@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import client from '../api/client'
-import { QrScanner } from '@yudiel/react-qr-scanner'
+import { Scanner as QrScanner } from '@yudiel/react-qr-scanner'
 
 export default function StudentCheckin(){
   const [token, setToken] = useState('')
