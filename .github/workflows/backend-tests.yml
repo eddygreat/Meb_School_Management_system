@@ -1,66 +1,3 @@
-name: Backend tests
-
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
-jobs:
-  test-backend:
-    runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_DB: sms
-          POSTGRES_USER: sms_user
-          POSTGRES_PASSWORD: sms_password
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U sms_user -d sms" --health-interval 10s --health-timeout 5s --health-retries 5
-      redis:
-        image: redis:7
-        ports:
-          - 6379:6379
-        options: >-
-          --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Python 3.11
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-
-      - name: Install system packages
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libpq-dev postgresql-client redis-tools
-
-      - name: Wait for Postgres
-        run: |
-          for i in {1..30}; do
-            pg_isready -h 127.0.0.1 -p 5432 -U sms_user && break || sleep 1
-          done
-
-      - name: Install Python deps
-        working-directory: backend
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-
-      - name: Run backend tests
-        working-directory: backend
-        env:
-          DATABASE_URL: postgresql+psycopg2://sms_user:sms_password@127.0.0.1:5432/sms
-          SECRET_KEY: test-secret
-          ENV: test
-        run: |
-          python -m pytest -q
 name: Backend Tests
 
 on:
@@ -68,6 +5,15 @@ on:
     branches: [ "main", "master" ]
   pull_request:
     branches: [ "main", "master" ]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
 
 jobs:
   test:
@@ -109,3 +55,77 @@ jobs:
         with:
           name: backend-coverage
           path: backend/coverage.xml
+
+  integration-test:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install backend requirements
+        working-directory: backend
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run application
+        working-directory: backend
+        run: uvicorn app.main:app --host 0.0.0.0 --port 8000 &
+
+      - name: Test application endpoint
+        run: |
+          sleep 5 # Wait for the server to start
+          curl -f http://localhost:8000/
+
+  deploy-backend:
+    runs-on: ubuntu-latest
+    needs: integration-test
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy to Heroku
+        uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: "your-backend-app-name" # TODO: Replace with your Heroku app name
+          heroku_email: ${{ secrets.HEROKU_EMAIL }}
+          appdir: "backend"
+
+  deploy-frontend:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: deploy-backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install dependencies
+        working-directory: ./frontend
+        run: npm ci
+      - name: Build
+        working-directory: ./frontend
+        run: npm run build
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './frontend/build'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
