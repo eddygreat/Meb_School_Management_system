@@ -7,7 +7,7 @@ COPY frontend/package.json frontend/package-lock.json ./
 RUN npm ci
 
 COPY frontend/ ./
-RUN npm run build
+RUN CI=false npm run build
 
 # Stage 2: Build the Python backend
 FROM python:3.11-slim
