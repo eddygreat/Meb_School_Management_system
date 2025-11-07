@@ -30,4 +30,4 @@ primary_region = 'fra'
   timeout = "2s"
   method = "GET"
   # This path should match the health check endpoint in your main.py
-  path = "/api/v1/health"
+  path = "/api/health"
