@@ -1,18 +1,12 @@
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from app.core.config import settings
 from app.core.database import init_db
 from app.routers import auth, students, teachers, grades, fees, comms, analytics, admin, attendance, biometric, timetable, curriculum, hr, security, settings as settings_router, discipline
+import os
 
 app = FastAPI(title=settings.APP_NAME)
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[settings.CORS_ORIGINS],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 @app.on_event("startup")
 async def on_startup():
@@ -38,3 +32,14 @@ app.include_router(discipline.router, prefix=settings.API_PREFIX + "/discipline"
 @app.get(settings.API_PREFIX + "/health")
 async def health():
     return {"status": "ok"}
+
+# Mount the static files directory after all API routes
+# This will serve the built React app
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+@app.get("/{full_path:path}")
+async def serve_react_app(full_path: str):
+    """Catch-all to serve the React index.html for any non-API route."""
+    if os.path.exists("static/index.html"):
+        return FileResponse("static/index.html")
+    return {"message": "React app not found. Please build the frontend."}
