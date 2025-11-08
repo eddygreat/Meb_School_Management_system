@@ -21,8 +21,8 @@ export default function Signup() {
       return;
     }
     try {
-      // Use the same endpoint as AdminUsers to create a user
-      await client.post('/api/admin/users', { email, password, role, full_name: fullName });
+      // Use the public registration endpoint
+      await client.post('/api/auth/register', { email, password, role, full_name: fullName });
       alert('Signup successful! Please log in.');
       navigate('/login');
     } catch (err) {
