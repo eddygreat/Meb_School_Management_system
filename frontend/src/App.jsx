@@ -29,14 +29,20 @@ import AdminExports from './pages/AdminExports'
 import AdminDiscipline from './pages/AdminDiscipline'
 import TeacherDiscipline from './pages/TeacherDiscipline'
 import ProtectedRoute from './routes/ProtectedRoute'
+import { useAuth } from './context/AuthContext'
 
 export default function App() {
+  const { user, logout } = useAuth();
+
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900">
-      <nav className="bg-white shadow p-4 flex gap-4">
-        <Link to="/">Home</Link>
-        <Link to="/login">Login</Link>
-        <Link to="/signup">Sign Up</Link>
+      <nav className="bg-white shadow p-4 flex /Link>}
+        </div>
+        {user && (
+          <button onClick={logout} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+            Logout
+          </button>
+        )}
       </nav>
       <Routes>
         <Route path="/login" element={<Login />} />

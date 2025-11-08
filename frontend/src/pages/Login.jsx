@@ -1,17 +1,30 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import client from '../api/client';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // Implement your login logic here
-    console.log('Logging in with:', email, password);
-    // On successful login, navigate to the appropriate dashboard
-    // navigate('/admin'); 
+    setError('');
+    try {
+      // The login function from AuthContext will handle token storage and navigation
+      await login(email, password);
+      
+      // The navigation will be handled inside the login function based on the user's role.
+      // No need to call navigate() here directly.
+
+    } catch (err) {
+      const errorMessage = err.response?.data?.detail || 'Login failed. Please check your credentials.';
+      setError(errorMessage);
+      console.error('Login error:', err);
+    }
   };
 
   return (
@@ -34,6 +47,7 @@ export default function Login() {
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
               id="password" type="password" placeholder="******************" value={password} onChange={(e) => setPassword(e.target.value)} required />
+            {error && <p className="text-red-500 text-xs italic">{error}</p>}
           </div>
           <div className="flex items-center justify-between">
             <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">

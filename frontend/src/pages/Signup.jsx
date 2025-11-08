@@ -5,6 +5,7 @@ export default function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [role, setRole] = useState('student'); // Add role state, default to student
   const navigate = useNavigate();
 
   const handleSignup = (e) => {
@@ -14,8 +15,9 @@ export default function Signup() {
       return;
     }
     // Implement your signup logic here
-    console.log('Signing up with:', email, password);
+    console.log('Signing up with:', { email, password, role });
     // On successful signup, you might want to navigate to the login page
+    alert('Signup successful! Please log in.');
     navigate('/login');
   };
 
@@ -39,6 +41,19 @@ export default function Signup() {
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
               id="password" type="password" placeholder="******************" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="role">
+              I am a
+            </label>
+            <select
+              id="role"
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              value={role} onChange={(e) => setRole(e.target.value)}>
+              <option value="student">Student</option>
+              <option value="teacher">Teacher</option>
+              <option value="parent">Parent</option>
+            </select>
           </div>
           <div className="mb-6">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="confirm-password">
