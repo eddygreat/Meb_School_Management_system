@@ -5,8 +5,10 @@ WORKDIR /app/frontend
 
 COPY frontend/package.json frontend/package-lock.json ./
 RUN npm ci
-
 COPY frontend/ ./
+
+# Grant execute permissions to the .bin directory before building
+RUN chmod -R +x node_modules/.bin/
 RUN CI=false npm run build
 
 # Stage 2: Build the Python backend
@@ -28,9 +30,6 @@ COPY --from=frontend-builder /app/frontend/dist ./backend/static
 COPY backend/ ./backend/
 
 WORKDIR /app/backend
-
-# Grant execute permissions to the .bin directory
-RUN chmod -R +x node_modules/.bin/
 
 EXPOSE 8080
 
