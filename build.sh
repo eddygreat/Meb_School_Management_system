@@ -9,8 +9,8 @@ pip install -r backend/requirements.txt
 echo "Building frontend..."
 cd frontend
 npm install
-# Give execution permission to react-scripts
-chmod +x node_modules/.bin/vite
+# Grant execute permissions to the .bin directory
+chmod -R +x node_modules/.bin/
 npm run build
 cd ..
  
