@@ -2,6 +2,7 @@ import { Routes, Route, Link, Navigate } from 'react-router-dom'
 import Login from './pages/Login'
 import AdminDashboard from './pages/AdminDashboard'
 import TeacherDashboard from './pages/TeacherDashboard'
+import Signup from './pages/Signup'
 import ParentDashboard from './pages/ParentDashboard'
 import StudentDashboard from './pages/StudentDashboard'
 import TeacherAttendance from './pages/TeacherAttendance'
@@ -35,10 +36,12 @@ export default function App() {
       <nav className="bg-white shadow p-4 flex gap-4">
         <Link to="/">Home</Link>
         <Link to="/login">Login</Link>
+        <Link to="/signup">Sign Up</Link>
       </nav>
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/face/login" element={<FaceLogin />} />
+        <Route path="/signup" element={<Signup />} />
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/password-reset/request" element={<PasswordResetRequest />} />
         <Route path="/password-reset/confirm" element={<PasswordResetConfirm />} />
