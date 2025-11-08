@@ -10,7 +10,7 @@ echo "Building frontend..."
 cd frontend
 npm install
 # Give execution permission to react-scripts
-chmod +x node_modules/.bin/react-scripts
+chmod +x node_modules/.bin/vite
 npm run build
 cd ..
  
