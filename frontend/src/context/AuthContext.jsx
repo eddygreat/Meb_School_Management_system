@@ -28,12 +28,7 @@ export function AuthProvider({ children }) {
 
   const login = async (email, password) => {
     const { data } = await client.post('/api/auth/login', { email, password })
-    localStorage.setItem('token', data.access_token)
-    // Fetch profile minimal (role) - stub using token payload in real app
-    // For demo, route based on email prefix
-    const role = email.startsWith('admin') ? 'admin' : email.startsWith('teacher') ? 'teacher' : email.startsWith('parent') ? 'parent' : 'student'
-    setUser({ email, role })
-    navigate(`/${role}`)
+    loginWithToken(data.access_token);
   }
 
   const logout = () => {

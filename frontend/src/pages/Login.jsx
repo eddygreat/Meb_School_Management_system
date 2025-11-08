@@ -7,6 +7,7 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -44,9 +45,14 @@ export default function Login() {
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
               Password
             </label>
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-              id="password" type="password" placeholder="******************" value={password} onChange={(e) => setPassword(e.target.value)} required />
+            <div className="relative">
+              <input
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                id="password" type={showPassword ? 'text' : 'password'} placeholder="******************" value={password} onChange={(e) => setPassword(e.target.value)} required />
+              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 mb-3">
+                {showPassword ? 'Hide' : 'Show'}
+              </button>
+            </div>
             {error && <p className="text-red-500 text-xs italic">{error}</p>}
           </div>
           <div className="flex items-center justify-between">

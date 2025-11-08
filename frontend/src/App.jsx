@@ -67,7 +67,7 @@ export default function App() {
           <Route path="/admin/exports" element={<AdminExports />} />
           <Route path="/admin/discipline" element={<AdminDiscipline />} />
         </Route>
-        <Route element={<ProtectedRoute roles={["teacher"]} />}> 
+        <Route element={<ProtectedRoute roles={["admin", "teacher"]} />}> 
           <Route path="/teacher" element={<TeacherDashboard />} />
           <Route path="/teacher/attendance" element={<TeacherAttendance />} />
           <Route path="/teacher/face/enroll" element={<FaceEnroll />} />
@@ -77,14 +77,14 @@ export default function App() {
           <Route path="/teacher/curriculum" element={<TeacherCurriculum />} />
           <Route path="/teacher/discipline" element={<TeacherDiscipline />} />
         </Route>
-        <Route element={<ProtectedRoute roles={["parent"]} />}> 
+        <Route element={<ProtectedRoute roles={["admin", "parent"]} />}> 
           <Route path="/parent" element={<ParentDashboard />} />
           <Route path="/parent/face/enroll" element={<FaceEnroll />} />
           <Route path="/parent/invoices" element={<ParentInvoices />} />
           <Route path="/parent/report" element={<StudentReport />} />
           <Route path="/parent/messages" element={<ParentMessages />} />
         </Route>
-        <Route element={<ProtectedRoute roles={["student"]} />}> 
+        <Route element={<ProtectedRoute roles={["admin", "student"]} />}> 
           <Route path="/student" element={<StudentDashboard />} />
           <Route path="/student/checkin" element={<StudentCheckin />} />
           <Route path="/student/face/enroll" element={<FaceEnroll />} />
