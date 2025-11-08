@@ -34,13 +34,12 @@ app.include_router(discipline.router, prefix=settings.API_PREFIX + "/discipline"
 async def health():
     return {"status": "ok"}
 
-# Mount the static files directory after all API routes
-# This will serve the built React app
-app.mount("/static", StaticFiles(directory="static"), name="static")
-
 @app.get("/{full_path:path}")
 async def serve_react_app(full_path: str):
     """Catch-all to serve the React index.html for any non-API route."""
     if os.path.exists("static/index.html"):
         return FileResponse("static/index.html")
     return {"message": "React app not found. Please build the frontend."}
+
+# This must be mounted after all other routes, including the catch-all
+app.mount("/", StaticFiles(directory="static"), name="static")
