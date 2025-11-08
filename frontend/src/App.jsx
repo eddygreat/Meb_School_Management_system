@@ -36,7 +36,11 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900">
-      <nav className="bg-white shadow p-4 flex /Link>}
+      <nav className="bg-white shadow p-4 flex justify-between items-center">
+        <div className="flex gap-4">
+          <Link to="/">Home</Link>
+          {!user && <Link to="/login">Login</Link>}
+          {!user && <Link to="/signup">Sign Up</Link>}
         </div>
         {user && (
           <button onClick={logout} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
