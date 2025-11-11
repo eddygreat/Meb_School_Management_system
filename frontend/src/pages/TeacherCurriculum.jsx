@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 import client from '../api/client'
+import Input from '../components/Input'
+import { useAuth } from '../context/AuthContext'
 
 export default function TeacherCurriculum(){
-  const [teacherId, setTeacherId] = useState('')
+  const { user } = useAuth()
   const [subjectId, setSubjectId] = useState('')
   const [classId, setClassId] = useState('')
 
@@ -17,8 +19,8 @@ export default function TeacherCurriculum(){
   const [gradeForm, setGradeForm] = useState({ submission_id:'', score:'', feedback:'' })
 
   const load = async () => {
-    if (teacherId) {
-      const { data } = await client.get('/api/curriculum/lesson-plans', { params: { teacher_id: teacherId } })
+    if (user?.teacher_id) {
+      const { data } = await client.get('/api/curriculum/lesson-plans', { params: { teacher_id: user.teacher_id } })
       setLessonPlans(data)
     }
     if (subjectId) {
@@ -65,11 +67,12 @@ export default function TeacherCurriculum(){
     if (assignments[0]) await loadSubmissions(assignments[0].id)
   }
 
+  useEffect(() => { load() }, [user, subjectId, classId])
+
   return (
     <div className="p-6 space-y-6">
       <h1 className="text-2xl font-bold">Teacher Curriculum</h1>
       <div className="bg-white p-4 rounded shadow grid md:grid-cols-4 gap-3 items-end">
-        <Input label="Teacher ID" value={teacherId} onChange={setTeacherId} />
         <Input label="Subject ID" value={subjectId} onChange={setSubjectId} />
         <Input label="Class ID" value={classId} onChange={setClassId} />
         <button onClick={load} className="bg-blue-600 text-white px-4 py-2 rounded">Load</button>
@@ -161,15 +164,6 @@ export default function TeacherCurriculum(){
           </div>
         </div>
       </div>
-    </div>
-  )
-}
-
-function Input({ label, value, onChange, type="text" }){
-  return (
-    <div>
-      <label className="block text-sm">{label}</label>
-      <input type={type} className="border p-2 rounded w-full" value={value} onChange={(e)=>onChange(e.target.value)} />
     </div>
   )
 }

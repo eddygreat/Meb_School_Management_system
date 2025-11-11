@@ -1,5 +1,6 @@
 import { useAuth } from '../context/AuthContext'
 import { Link } from 'react-router-dom'
+import Card from '../components/Card'
 
 export default function TeacherDashboard(){
   const { logout } = useAuth()
@@ -12,20 +13,12 @@ export default function TeacherDashboard(){
         <Card title="Attendance" extra={<Link to="/teacher/attendance" className="text-blue-600 text-sm">Open QR</Link>} />
         <Card title="Grades Entry" extra={<Link to="/teacher/grades-entry" className="text-blue-600 text-sm">Enter</Link>} />
         <Card title="Messages" extra={<Link to="/teacher/messages" className="text-blue-600 text-sm">Open</Link>} />
-        <Card title="Discipline" extra={<Link to="/teacher/discipline" className="text-blue-600 text-sm">Open</Link>} />
-        <Card title="Performance Insights"/>
+        <Card title="Discipline" extra={<Link to="/teacher/discipline" className="text-blue-600 text-sm">Report Incident</Link>}>
+          Report and view student discipline incidents.
+        </Card>
+        <Card title="Performance Insights">Analytics on student performance and attendance.</Card>
       </div>
       <button onClick={logout} className="mt-6 bg-gray-800 text-white px-4 py-2 rounded">Logout</button>
-    </div>
-  )
-}
-
-function Card({ title, extra }){
-  return (
-    <div className="bg-white p-4 rounded shadow">
-      <h2 className="font-semibold">{title}</h2>
-      <p className="text-sm text-gray-500">Stub module</p>
-      {extra && <div className="mt-2">{extra}</div>}
     </div>
   )
 }

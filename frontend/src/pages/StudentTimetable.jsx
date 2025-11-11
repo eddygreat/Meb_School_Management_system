@@ -1,48 +1,59 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import client from '../api/client'
+import { useAuth } from '../context/AuthContext'
 
 export default function StudentTimetable(){
-  const [classId, setClassId] = useState('')
+  const { user } = useAuth()
   const [entries, setEntries] = useState([])
+  const [master, setMaster] = useState({ subjects: [], rooms: [], timeslots: [] })
   const [error, setError] = useState('')
 
   const load = async () => {
-    if (!classId) return
+    if (!user?.class_id) return
     setError('')
     try {
-      const { data } = await client.get(`/api/timetable/schedule/by-class/${classId}`)
-      setEntries(data)
+      const [scheduleRes, subjectsRes, roomsRes, timeslotsRes] = await Promise.all([
+        client.get(`/api/timetable/schedule/by-class/${user.class_id}`),
+        client.get('/api/timetable/subjects'),
+        client.get('/api/timetable/rooms'),
+        client.get('/api/timetable/timeslots')
+      ]);
+      setEntries(scheduleRes.data);
+      setMaster({
+        subjects: subjectsRes.data,
+        rooms: roomsRes.data,
+        timeslots: timeslotsRes.data
+      });
     } catch {
       setError('Failed to load timetable')
     }
   }
 
+  useEffect(() => { load() }, [user])
+  
+  const find = (collection, id) => collection.find(item => item.id === id);
+  const formatSlot = (slot) => {
+    if (!slot) return '';
+    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    return `${days[slot.day_of_week]} ${slot.start_time}-${slot.end_time}`;
+  };
+
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">Class Timetable</h1>
-      <div className="bg-white p-4 rounded shadow flex gap-2 items-end mb-4">
-        <div>
-          <label className="block text-sm">Class ID</label>
-          <input className="border p-2 rounded" value={classId} onChange={(e)=>setClassId(e.target.value)} placeholder="e.g. 1" />
-        </div>
-        <button onClick={load} className="bg-blue-600 text-white px-4 py-2 rounded">Load</button>
-        {error && <span className="text-sm text-red-600">{error}</span>}
+      {error && <div className="text-red-500 text-sm">{error}</div>}
+      <div className="space-y-2">
+        {entries.map(e => (
+          <div key={e.id} className="bg-white p-3 rounded shadow text-sm flex justify-between">
+            <span>
+              <span className="font-semibold">{find(master.subjects, e.subject_id)?.name || `Subject #${e.subject_id}`}</span>
+              <span className="text-gray-600"> in {find(master.rooms, e.room_id)?.name || 'N/A'}</span>
+            </span>
+            <span>{formatSlot(find(master.timeslots, e.time_slot_id))}</span>
+          </div>
+        ))}
+        {!entries.length && <div className="text-sm text-gray-500">No entries.</div>}
       </div>
-      <List entries={entries} />
-    </div>
-  )
-}
-
-function List({ entries }){
-  if (!entries?.length) return <div className="text-sm text-gray-500">No entries.</div>
-  return (
-    <div className="space-y-2">
-      {entries.map(e => (
-        <div key={e.id} className="bg-white p-3 rounded shadow text-sm flex justify-between">
-          <span>Subject #{e.subject_id} • Room #{e.room_id || '-'} </span>
-          <span>Slot #{e.time_slot_id}</span>
-        </div>
-      ))}
     </div>
   )
 }

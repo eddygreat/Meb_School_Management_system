@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import client from '../api/client'
 import { Scanner as QrScanner } from '@yudiel/react-qr-scanner'
+import { useAuth } from '../context/AuthContext'
 
 export default function StudentCheckin(){
   const [token, setToken] = useState('')
-  const [studentId, setStudentId] = useState('')
+  const { user } = useAuth()
   const [status, setStatus] = useState('')
   const [error, setError] = useState('')
   const [scanning, setScanning] = useState(true)
@@ -14,7 +15,7 @@ export default function StudentCheckin(){
     setStatus('')
     setError('')
     try {
-      const { data } = await client.post('/api/attendance/checkin/qr', { token, student_id: Number(studentId) })
+      const { data } = await client.post('/api/attendance/checkin/qr', { token, student_id: Number(user.student_id) })
       setStatus(`Checked in: record #${data.id}`)
     } catch (e) {
       setError(e?.response?.data?.detail || 'Check-in failed')
@@ -49,10 +50,6 @@ export default function StudentCheckin(){
           <div>
             <label className="block text-sm">Token</label>
             <input className="border p-2 rounded w-full" value={token} onChange={(e)=>setToken(e.target.value)} placeholder="Token from QR" />
-          </div>
-          <div>
-            <label className="block text-sm">Your Student ID</label>
-            <input className="border p-2 rounded w-full" value={studentId} onChange={(e)=>setStudentId(e.target.value)} placeholder="e.g. 1001" />
           </div>
           <button className="bg-blue-600 text-white px-4 py-2 rounded">Check In</button>
           {status && <div className="text-green-700 text-sm">{status}</div>}

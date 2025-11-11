@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import client from '../api/client'
+import { useAuth } from '../context/AuthContext'
 
 export default function ParentMessages(){
-  const [parentUserId, setParentUserId] = useState('')
+  const { user } = useAuth()
   const [threads, setThreads] = useState([])
   const [selectedThread, setSelectedThread] = useState(null)
   const [messages, setMessages] = useState([])
@@ -10,8 +11,8 @@ export default function ParentMessages(){
   const [create, setCreate] = useState({ teacher_id: '', subject: '' })
 
   const loadThreads = async () => {
-    if (!parentUserId) return
-    const { data } = await client.get('/api/comms/threads', { params: { parent_user_id: parentUserId } })
+    if (!user?.id) return
+    const { data } = await client.get('/api/comms/threads', { params: { parent_user_id: user.id } })
     setThreads(data)
   }
 
@@ -29,20 +30,18 @@ export default function ParentMessages(){
   }
 
   const createThread = async () => {
-    if (!parentUserId || !create.teacher_id || !create.subject) return
-    await client.post('/api/comms/threads', { teacher_id: Number(create.teacher_id), parent_user_id: Number(parentUserId), subject: create.subject })
+    if (!user?.id || !create.teacher_id || !create.subject) return
+    await client.post('/api/comms/threads', { teacher_id: Number(create.teacher_id), parent_user_id: Number(user.id), subject: create.subject })
     setCreate({ teacher_id: '', subject: '' })
     await loadThreads()
   }
+
+  useEffect(() => { loadThreads() }, [user])
 
   return (
     <div className="p-6 grid md:grid-cols-3 gap-4">
       <div className="space-y-3">
         <div className="bg-white p-3 rounded shadow space-y-2">
-          <div>
-            <label className="block text-sm">My Parent User ID</label>
-            <input className="border p-2 rounded w-full" value={parentUserId} onChange={e=>setParentUserId(e.target.value)} />
-          </div>
           <button className="bg-blue-600 text-white px-3 py-2 rounded" onClick={loadThreads}>Load Threads</button>
         </div>
         <div className="bg-white p-3 rounded shadow space-y-2">

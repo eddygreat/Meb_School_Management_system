@@ -1,18 +1,19 @@
 import { useEffect, useState } from 'react'
 import client from '../api/client'
+import { useAuth } from '../context/AuthContext'
 
 export default function ParentInvoices(){
-  const [studentId, setStudentId] = useState('')
+  const { user } = useAuth()
   const [invoices, setInvoices] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
   const fetchInvoices = async () => {
-    if (!studentId) return
+    if (!user?.student_id) return
     setLoading(true)
     setError('')
     try {
-      const { data } = await client.get(`/api/fees/invoices/${studentId}`)
+      const { data } = await client.get(`/api/fees/invoices/${user.student_id}`)
       setInvoices(data)
     } catch (e) {
       setError('Failed to load invoices')
@@ -20,6 +21,8 @@ export default function ParentInvoices(){
       setLoading(false)
     }
   }
+
+  useEffect(() => { fetchInvoices() }, [user])
 
   const pay = async (invoiceId, provider='paystack') => {
     try {
@@ -43,11 +46,6 @@ export default function ParentInvoices(){
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">My Invoices</h1>
       <div className="bg-white p-4 rounded shadow flex gap-2 items-end mb-4">
-        <div>
-          <label className="block text-sm">Student ID</label>
-          <input className="border p-2 rounded" value={studentId} onChange={(e)=>setStudentId(e.target.value)} placeholder="e.g. 1" />
-        </div>
-        <button onClick={fetchInvoices} className="bg-blue-600 text-white px-4 py-2 rounded">Load</button>
         {loading && <span className="text-sm text-gray-600">Loading...</span>}
         {error && <span className="text-sm text-red-600">{error}</span>}
       </div>

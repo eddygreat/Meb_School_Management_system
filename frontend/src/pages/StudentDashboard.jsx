@@ -1,5 +1,6 @@
 import { useAuth } from '../context/AuthContext'
 import { Link } from 'react-router-dom'
+import Card from '../components/Card'
 
 export default function StudentDashboard(){
   const { logout } = useAuth()
@@ -13,15 +14,6 @@ export default function StudentDashboard(){
         <Card title="Report" extra={<Link to="/student/report" className="text-blue-600 text-sm">View</Link>} />
       </div>
       <button onClick={logout} className="mt-6 bg-gray-800 text-white px-4 py-2 rounded">Logout</button>
-    </div>
-  )
-}
-
-function Card({ title }){
-  return (
-    <div className="bg-white p-4 rounded shadow">
-      <h2 className="font-semibold">{title}</h2>
-      <p className="text-sm text-gray-500">Stub module</p>
     </div>
   )
 }

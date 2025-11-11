@@ -1,12 +1,12 @@
 # School Management System (FastAPI + React)
 
-A modular, scalable, mobile-first school management system.
+A modular, scalable, and mobile-first school management system designed to streamline school operations and enhance communication between administrators, teachers, parents, and students.
 
 - Backend: FastAPI, SQLAlchemy, PostgreSQL, JWT Auth, RBAC, Celery (stubs)
 - Frontend: React (Vite), Tailwind CSS, Axios, Protected Routing, Role dashboards
 - Services: Docker Compose (Postgres, Redis, Backend, Frontend)
 
-## Quick Start
+## Getting Started
 
 1. Copy env files
 
@@ -14,21 +14,52 @@ A modular, scalable, mobile-first school management system.
 - frontend/.env.example -> frontend/.env
 
 2. Start with Docker
+   The easiest way to get the application running is with Docker.
 
 - docker-compose up --build
 
-3. Local dev (without Docker)
+Once the services are up, the application will be available at `http://localhost:5173`.
 
-- Backend: create venv, pip install -r backend/requirements.txt, set envs, run `uvicorn app.main:app --reload --port 8000`
-- Frontend: cd frontend, `npm i`, `npm run dev`
+3. Create Your First Admin User
+   The system is locked down by default. To get started, you need to create the first administrator account.
+
+   Open a new terminal and run the following command:
+   ```bash
+   curl -X POST "http://localhost:8000/api/auth/register-admin" -H "Content-Type: application/json" -d '{"email": "admin@school.com", "password": "password", "full_name": "Admin User"}'
+   ```
+   This will create an admin user with the email `admin@school.com` and password `password`.
+
+## How to Use the Application
+
+After starting the application and creating your admin user, you can begin exploring the different roles.
+
+### 1. Admin
+- **Login**: Go to `http://localhost:5173/login` and sign in with `admin@school.com` and `password`.
+- **Create Users**: As an admin, your first step is to populate the school. Navigate to the **Users** module to create accounts for Teachers, Students, and Parents.
+- **Set Up Timetable**: Go to the **Timetable** module to define the school's master data, including Classes, Subjects, Rooms, and Time Slots. Once the master data is set, you can schedule classes.
+- **Manage Invoices**: Use the **Fees & Payments** module to create and view student invoices.
+
+### 2. Teacher
+- **Login**: Log in with a teacher account created by the Admin.
+- **Manage Curriculum**: In the **Assignments & Grading** module, you can create lesson plans, upload resources, and create assignments for your classes.
+- **Enter Grades**: Use the **Grades Entry** module to input student scores for continuous assessments and exams.
+- **Take Attendance**: Start a real-time attendance session using a QR code from the **Attendance** module.
+
+### 3. Student
+- **Login**: Log in with a student account.
+- **View Your Schedule**: Check your personal class schedule in the **My Timetable** module.
+- **Manage Assignments**: View and submit your assignments.
+- **Check-in**: Use the **QR Check-in** feature to mark your attendance for a class.
+- **View Reports**: Access your termly report cards.
+
+### 4. Parent
+- **Login**: Log in with a parent account.
+- **View Invoices**: Check your child's school fees and make payments via Paystack or Flutterwave.
+- **Communicate**: Use the **Messages** module to communicate directly with your child's teachers.
 
 ## Default Roles
 
 - admin, teacher, parent, student
-
-## Sample Credentials
-
-- Create an admin via `POST /api/auth/register-admin` then login `POST /api/auth/login`.
 
 ## Structure
 

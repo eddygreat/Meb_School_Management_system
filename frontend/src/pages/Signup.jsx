@@ -76,9 +76,10 @@ export default function Signup() {
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               value={role} onChange={(e) => setRole(e.target.value)}>
               <option value="student">Student</option>
-              <option value="teacher">Teacher</option>
               <option value="parent">Parent</option>
-              <option value="admin">Admin</option>
+              {/* Admin and Teacher accounts should be created by an Admin */}
+              {/* <option value="teacher">Teacher</option> */}
+              {/* <option value="admin">Admin</option> */}
             </select>
           </div>
           <div className="mb-6">
