@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import client from '../api/client'
 import { useAuth } from '../context/AuthContext'
-import Input from '../components/Input'
+import Input from './Input'
 
 export default function StudentAssignments(){
   const [classId, setClassId] = useState('')

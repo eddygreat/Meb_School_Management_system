@@ -1,5 +1,5 @@
 import { useAuth } from '../context/AuthContext'
-import Card from '../components/Card'
+import Card from './Card'
 import { Link } from 'react-router-dom'
 
 export default function ParentDashboard(){

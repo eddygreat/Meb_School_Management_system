@@ -1,4 +1,4 @@
-import DisciplinePage from '../components/DisciplinePage'
+import DisciplinePage from './DisciplinePage'
 
 export default function AdminDiscipline(){
   // Admins can resolve incidents

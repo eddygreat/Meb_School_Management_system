@@ -57,6 +57,48 @@ After starting the application and creating your admin user, you can begin explo
 - **View Invoices**: Check your child's school fees and make payments via Paystack or Flutterwave.
 - **Communicate**: Use the **Messages** module to communicate directly with your child's teachers.
 
+## Deployment on Render
+
+This project can be deployed as two separate services on [Render](https://render.com/):
+1.  A **Web Service** for the FastAPI backend.
+2.  A **Static Site** for the React frontend.
+
+### 1. Backend Service (FastAPI)
+
+First, create a new PostgreSQL database on Render. You will need its **Internal Database URL** for the environment variables.
+
+Then, create a new **Web Service** with the following settings:
+
+- **Repository**: Your GitHub repository.
+- **Root Directory**: `backend`
+- **Build Command**: `pip install -r requirements.txt`
+- **Start Command**: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+
+Under the **Environment** tab, add the following variables:
+
+- `DATABASE_URL`: The **Internal Database URL** from your Render PostgreSQL instance.
+- `SECRET_KEY`: A new secret key you generate (e.g., using `openssl rand -hex 32`).
+- `CORS_ORIGINS`: The URL of your frontend static site (e.g., `https://your-frontend-app.onrender.com`). You can add this after deploying the frontend.
+
+### 2. Frontend Service (React)
+
+Create a new **Static Site** on Render with the following settings:
+
+- **Repository**: Your GitHub repository.
+- **Root Directory**: `frontend`
+- **Build Command**: `npm install && npm run build`
+- **Publish Directory**: `dist`
+
+Under the **Environment** tab, add the following variable:
+
+- `VITE_API_BASE_URL`: The URL of your backend web service (e.g., `https://your-backend-app.onrender.com`).
+
+Finally, add a **Rewrite Rule** under the **Redirects/Rewrites** tab to handle client-side routing:
+
+- **Source**: `/*`
+- **Destination**: `/index.html`
+- **Action**: Rewrite
+
 ## Default Roles
 
 - admin, teacher, parent, student

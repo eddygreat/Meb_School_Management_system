@@ -1,6 +1,6 @@
 import { useAuth } from '../context/AuthContext'
 import { Link } from 'react-router-dom'
-import Card from '../components/Card'
+import Card from './Card'
 
 export default function TeacherDashboard(){
   const { logout } = useAuth()

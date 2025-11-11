@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import client from '../api/client'
-import Input from '../components/Input'
+import Input from './Input'
 import { useAuth } from '../context/AuthContext'
 
 export default function TeacherCurriculum(){
