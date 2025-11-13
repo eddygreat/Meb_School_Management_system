@@ -8,11 +8,6 @@ import os
 
 app = FastAPI(title=settings.APP_NAME)
 
-@app.on_event("startup")
-async def on_startup():
-    if os.environ.get("RUN_DB_MIGRATIONS"):
-        await init_db()
-
 app.include_router(auth.router, prefix=settings.API_PREFIX + "/auth", tags=["auth"]) 
 app.include_router(students.router, prefix=settings.API_PREFIX + "/students", tags=["students"]) 
 app.include_router(teachers.router, prefix=settings.API_PREFIX + "/teachers", tags=["teachers"]) 
