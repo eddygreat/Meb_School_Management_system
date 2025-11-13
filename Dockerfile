@@ -21,16 +21,25 @@ WORKDIR /app
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
+    # Clean up apt-get lists to reduce image size
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY --from=frontend-builder /app/frontend/dist ./backend/static
-COPY backend/ ./backend/
-
-WORKDIR /app/backend
+# Copy the built frontend assets to the /app/static directory.
+COPY --from=frontend-builder /app/frontend/dist ./static
+# Copy the backend application code directly into the /app directory.
+COPY backend/ .
 
 EXPOSE 8080
+
+# Create and switch to a non-root user for security
+RUN useradd --create-home appuser
+USER appuser
+
+# Set the working directory to the app root
+WORKDIR /app
 
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]

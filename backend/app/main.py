@@ -1,30 +1,34 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, APIRouter
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from app.core.config import settings
-from app.core.database import init_db
-from app.routers import auth, students, teachers, grades, fees, comms, analytics, admin, attendance, biometric, timetable, curriculum, hr, security, settings as settings_router, discipline
+from app.routers.api import api_router
 import os
 
 app = FastAPI(title=settings.APP_NAME)
+STATIC_DIR = "/app/static"
 
-app.include_router(auth.router, prefix=settings.API_PREFIX + "/auth", tags=["auth"]) 
-app.include_router(students.router, prefix=settings.API_PREFIX + "/students", tags=["students"]) 
-app.include_router(teachers.router, prefix=settings.API_PREFIX + "/teachers", tags=["teachers"]) 
-app.include_router(grades.router, prefix=settings.API_PREFIX + "/grades", tags=["grades"]) 
-app.include_router(fees.router, prefix=settings.API_PREFIX + "/fees", tags=["fees"]) 
-app.include_router(comms.router, prefix=settings.API_PREFIX + "/comms", tags=["comms"]) 
-app.include_router(analytics.router, prefix=settings.API_PREFIX + "/analytics", tags=["analytics"]) 
-app.include_router(admin.router, prefix=settings.API_PREFIX + "/admin", tags=["admin"]) 
-app.include_router(attendance.router, prefix=settings.API_PREFIX + "/attendance", tags=["attendance"]) 
-app.include_router(biometric.router, prefix=settings.API_PREFIX + "/biometric", tags=["biometric"]) 
-app.include_router(timetable.router, prefix=settings.API_PREFIX + "/timetable", tags=["timetable"]) 
-app.include_router(curriculum.router, prefix=settings.API_PREFIX + "/curriculum", tags=["curriculum"]) 
-app.include_router(hr.router, prefix=settings.API_PREFIX + "/hr", tags=["hr"]) 
-app.include_router(security.router, prefix=settings.API_PREFIX + "/security", tags=["security"]) 
-app.include_router(settings_router.router, prefix=settings.API_PREFIX + "/settings", tags=["settings"]) 
-app.include_router(discipline.router, prefix=settings.API_PREFIX + "/discipline", tags=["discipline"]) 
+# CORS Middleware to allow the frontend to communicate with the backend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[str(origin) for origin in settings.CORS_ORIGINS],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-@app.get(settings.API_PREFIX + "/health")
+@app.get("/api/health")
 async def health():
     return {"status": "ok"}
+
+# Mount the aggregated API router
+app.mount(settings.API_PREFIX, api_router)
+
+# Mount the static files server for the frontend assets
+app.mount("/assets", StaticFiles(directory=os.path.join(STATIC_DIR, "assets")), name="assets")
+
+# Catch-all route to serve the frontend's index.html for client-side routing
+@app.get("/{full_path:path}")
+async def serve_react_app(full_path: str):
+    return FileResponse(os.path.join(STATIC_DIR, "index.html"))
