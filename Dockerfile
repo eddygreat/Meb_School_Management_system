@@ -33,13 +33,14 @@ COPY --from=frontend-builder /app/frontend/dist ./static
 # Copy the backend application code directly into the /app directory.
 COPY backend/ .
 
-EXPOSE 8080
-
 # Create and switch to a non-root user for security
 RUN useradd --create-home appuser
 USER appuser
 
-# Set the working directory to the app root
-WORKDIR /app
+EXPOSE 8080
+
+# Health check to ensure the application is running before accepting traffic
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:8080/api/health || exit 1
 
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]

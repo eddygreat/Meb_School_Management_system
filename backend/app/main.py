@@ -18,10 +18,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/api/health")
-async def health():
-    return {"status": "ok"}
-
 # Mount the aggregated API router
 app.mount(settings.API_PREFIX, api_router)
 
