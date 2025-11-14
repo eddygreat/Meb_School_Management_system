@@ -2,8 +2,7 @@ from fastapi import APIRouter
 
 from app.routers import (
     admin, analytics, attendance, auth, biometric, comms, curriculum, discipline,
-    fees, grades, hr, security, settings as settings_router, students, teachers,
-    timetable
+    fees, grades, hr, security, settings_router, students, teachers, timetable
 )
 
 api_router = APIRouter()
