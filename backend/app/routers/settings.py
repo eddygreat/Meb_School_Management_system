@@ -32,5 +32,4 @@ async def set_setting(key: str, value: str, db: AsyncSession = Depends(get_db), 
         s = Setting(key=key, value=value)
         db.add(s)
     await db.commit()
-    await write_audit(db, current.id, 'settings.set', f'{key}')
     return {"key": s.key, "value": s.value}

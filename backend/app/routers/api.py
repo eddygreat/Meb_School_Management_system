@@ -1,8 +1,8 @@
 from fastapi import APIRouter
 
 from app.routers import (
-    admin, analytics, attendance, auth, biometric, comms, curriculum,
-    discipline, fees, grades, hr, security, settings, students, teachers,
+    admin, analytics, attendance, auth, biometric, comms, curriculum, discipline,
+    fees, grades, hr, security, settings as settings_router, students, teachers,
     timetable
 )
 
@@ -20,7 +20,7 @@ api_router.include_router(fees.router, prefix="/fees", tags=["fees"])
 api_router.include_router(grades.router, prefix="/grades", tags=["grades"])
 api_router.include_router(hr.router, prefix="/hr", tags=["hr"])
 api_router.include_router(security.router, prefix="/security", tags=["security"])
-api_router.include_router(settings.router, prefix="/settings", tags=["settings"])
+api_router.include_router(settings_router.router, prefix="/settings", tags=["settings"])
 api_router.include_router(students.router, prefix="/students", tags=["students"])
 api_router.include_router(teachers.router, prefix="/teachers", tags=["teachers"])
 api_router.include_router(timetable.router, prefix="/timetable", tags=["timetable"])

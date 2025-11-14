@@ -10,7 +10,7 @@ router = APIRouter()
 @router.get("/", response_model=list[StudentOut])
 async def list_students(db: AsyncSession = Depends(get_db), user=Depends(require_roles("admin", "teacher"))):
     result = await db.execute(select(Student))
-    return [s for s in result.scalars().all()]
+    return result.scalars().all()
 
 @router.post("/", response_model=StudentOut)
 async def create_student(payload: StudentCreate, db: AsyncSession = Depends(get_db), user=Depends(require_roles("admin"))):
