@@ -11,15 +11,56 @@ export default function Signup() {
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [formErrors, setFormErrors] = useState({
+    fullName: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    role: '',
+  });
   const navigate = useNavigate();
+
+  const validateForm = () => {
+    const errors = {
+      fullName: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+      role: '',
+    };
+
+    if (!fullName) {
+      errors.fullName = 'Full name is required';
+    }
+
+    if (!email) {
+      errors.email = 'Email is required';
+    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email)) {
+      errors.email = 'Invalid email address';
+    }
+
+    if (!password) {
+      errors.password = 'Password is required';
+    } else if (password.length < 8) {
+      errors.password = 'Password must be at least 8 characters long';
+    }
+
+    if (!confirmPassword) {
+      errors.confirmPassword = 'Confirm password is required';
+    } else if (password !== confirmPassword) {
+      errors.confirmPassword = 'Passwords do not match';
+    }
+
+    setFormErrors(errors);
+
+    return Object.values(errors).every((error) => error === '');
+  };
 
   const handleSignup = async (e) => {
     e.preventDefault();
     setError('');
-    if (password !== confirmPassword) {
-      setError("Passwords don't match!");
-      return;
-    }
+    if (!validateForm()) return;
+
     try {
       // Use the public registration endpoint
       await client.post('/api/auth/register', { email, password, role, full_name: fullName });
@@ -43,16 +84,38 @@ export default function Signup() {
               Email
             </label>
             <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="email" type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+              className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
+                formErrors.email ? 'border-red-500' : ''
+              }`}
+              id="email"
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            {formErrors.email && (
+              <p className="text-red-500 text-xs italic">{formErrors.email}</p>
+            )}
           </div>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="full_name">
               Full Name
             </label>
             <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="full_name" type="text" placeholder="Full Name" value={fullName} onChange={(e) => setFullName(e.target.value)} required />
+              className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
+                formErrors.fullName ? 'border-red-500' : ''
+              }`}
+              id="full_name"
+              type="text"
+              placeholder="Full Name"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              required
+            />
+            {formErrors.fullName && (
+              <p className="text-red-500 text-xs italic">{formErrors.fullName}</p>
+            )}
           </div>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
@@ -60,12 +123,27 @@ export default function Signup() {
             </label>
             <div className="relative">
               <input
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                id="password" type={showPassword ? 'text' : 'password'} placeholder="******************" value={password} onChange={(e) => setPassword(e.target.value)} required />
-              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 mb-3">
+                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline ${
+                  formErrors.password ? 'border-red-500' : ''
+                }`}
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                placeholder="******************"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 mb-3"
+              >
                 {showPassword ? 'Hide' : 'Show'}
               </button>
             </div>
+            {formErrors.password && (
+              <p className="text-red-500 text-xs italic">{formErrors.password}</p>
+            )}
           </div>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="role">
@@ -73,14 +151,21 @@ export default function Signup() {
             </label>
             <select
               id="role"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              value={role} onChange={(e) => setRole(e.target.value)}>
+              className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
+                formErrors.role ? 'border-red-500' : ''
+              }`}
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+            >
               <option value="student">Student</option>
               <option value="parent">Parent</option>
               {/* Admin and Teacher accounts should be created by an Admin */}
               {/* <option value="teacher">Teacher</option> */}
               {/* <option value="admin">Admin</option> */}
             </select>
+            {formErrors.role && (
+              <p className="text-red-500 text-xs italic">{formErrors.role}</p>
+            )}
           </div>
           <div className="mb-6">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="confirm-password">
@@ -88,15 +173,33 @@ export default function Signup() {
             </label>
             <div className="relative">
               <input
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                id="confirm-password" type={showConfirmPassword ? 'text' : 'password'} placeholder="******************" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
-              <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 mb-3">
+                className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline ${
+                  formErrors.confirmPassword ? 'border-red-500' : ''
+                }`}
+                id="confirm-password"
+                type={showConfirmPassword ? 'text' : 'password'}
+                placeholder="******************"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 mb-3"
+              >
                 {showConfirmPassword ? 'Hide' : 'Show'}
               </button>
             </div>
+            {formErrors.confirmPassword && (
+              <p className="text-red-500 text-xs italic">{formErrors.confirmPassword}</p>
+            )}
           </div>
           <div className="flex items-center justify-between">
-            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+            <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              type="submit"
+            >
               Sign Up
             </button>
             <Link to="/login" className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">

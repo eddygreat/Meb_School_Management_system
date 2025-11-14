@@ -106,10 +106,12 @@ function AppRoutes() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <AppRoutes />
-      </Router>
-    </AuthProvider>
+    <Router>
+      <AuthProvider>
+        <div className="min-h-screen bg-gray-100">
+          <AppRoutes />
+        </div>
+      </AuthProvider>
+    </Router>
   );
 }
