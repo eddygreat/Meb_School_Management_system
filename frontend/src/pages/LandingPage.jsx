@@ -6,7 +6,7 @@ const LandingPage = () => {
     <div className="bg-gray-50 text-gray-800">
       {/* Header */}
       <header className="shadow-md">
-        <div className="container mx-auto px-6 py-4 width-full text-xl flex justify-between items-center overflow-x-auto">
+        <div className="container mx-auto px-6 py-4 text-xl flex justify-between items-center">
           <h1 className="font-bold text-blue-600 sm:text-2xl md:text-3xl">MebEduPortal</h1>
           <nav>
             <Link to="/login" className="px-4 py-2 sm:text-2xl md:text-3xl font-semibold text-gray-600 hover:text-blue-500">
