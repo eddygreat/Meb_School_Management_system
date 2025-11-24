@@ -1,0 +1,7 @@
+# Netlify configuration file
+# This file tells Netlify how to build and deploy your frontend.
+
+[build]
+  base    = "frontend"
+  command = "npm run build"
+  publish = "frontend/dist"

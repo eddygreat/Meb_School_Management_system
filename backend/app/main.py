@@ -8,16 +8,29 @@ app = FastAPI(
     description="The API for the School Management System.",
     version="1.0.0",
 )
+
+origins = []
+
 # Set all CORS enabled origins
 if hasattr(settings, "BACKEND_CORS_ORIGINS") and settings.BACKEND_CORS_ORIGINS:
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=[str(origin) for origin in settings.BACKEND_CORS_ORIGINS],
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
-    
+    origins.extend([str(origin) for origin in settings.BACKEND_CORS_ORIGINS])
+else:
+    # Default origins for local development
+    origins.extend([
+        "http://localhost",
+        "http://localhost:3000", # Common for React
+        "http://localhost:5173", # Common for Vite
+        # "https://your-app-name.netlify.app" # TODO: Add your Netlify frontend URL
+    ])
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # Include the main API router
 app.include_router(api_router, prefix=settings.API_PREFIX)
  
