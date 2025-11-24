@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import LandingPage from './pages/LandingPage';
 
 import Login from './pages/Login';
 import Signup from './pages/Signup';
@@ -56,15 +57,20 @@ function AppRoutes() {
 
   return (
     <Routes>
-      {/* Public Routes */}
+      {/* Public-facing Routes */}
+      <Route path="/" element={!user ? <LandingPage /> : <Navigate to={`/${user.role}/dashboard`} />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/face-login" element={<FaceLogin />} />
       <Route path="/password-reset/request" element={<PasswordResetRequest />} />
       <Route path="/password-reset/confirm" element={<PasswordResetConfirm />} />
 
-      {/* Redirect root to role-specific dashboard or login */}
-      <Route path="/" element={user ? <Navigate to={`/${user.role}/dashboard`} /> : <Navigate to="/login" />} />
+      {/* 
+        The old root path logic is now handled by the new "/" route.
+        If a user is logged in, they are redirected to their dashboard.
+        If they are not logged in, they see the Landing Page.
+
+      */}
 
       {/* Admin Routes */}
       <Route path="/admin/dashboard" element={<ProtectedRoute role="admin"><AdminDashboard /></ProtectedRoute>} />
