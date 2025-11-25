@@ -22,8 +22,9 @@ if config.config_file_name is not None:
 # Use DATABASE_URL from env if present
 db_url = os.getenv('DATABASE_URL', None)
 if db_url:
-    # sync driver required for Alembic offline/online contexts
-    db_url = db_url.replace('postgresql+asyncpg', 'postgresql+psycopg2')
+    # For PostgreSQL, Alembic needs a sync driver.
+    if 'postgresql+asyncpg' in db_url:
+        db_url = db_url.replace('postgresql+asyncpg', 'postgresql+psycopg2')
     config.set_main_option('sqlalchemy.url', db_url)
 
 # This is the target metadata for Alembic autogeneration

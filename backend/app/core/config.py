@@ -29,7 +29,8 @@ class Settings(BaseSettings):
     FLUTTERWAVE_SECRET_KEY: str | None = None
 
     class Config:
-        env_file = ".env"
+        # Load local settings first, then fall back to the standard .env
+        env_file = ".env.local", ".env"
         env_file_encoding = "utf-8"
 
 settings = Settings()

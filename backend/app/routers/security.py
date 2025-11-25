@@ -39,6 +39,7 @@ async def request_password_reset(email: str, request: Request, background_tasks:
         prt = PasswordResetToken(user_id=user.id, token=token, expires_at=datetime.utcnow() + timedelta(hours=1))
         db.add(prt)
         await log_audit_event(db, request, "PASSWORD_RESET_REQUEST", actor_id=user.id, target=user.email)
+        await db.flush() # Flush to ensure prt is persisted before commit
         await db.commit()
         # Send email via background task with token link
         reset_link = f"http://localhost:5173/password-reset/confirm?token={token}"

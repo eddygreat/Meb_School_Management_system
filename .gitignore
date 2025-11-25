@@ -11,6 +11,7 @@ backend/venv
 venv
 backend/__pycache__
 backend/.env
+backend/.env.local
 backend/test_app_ci.db
 
 # IDE / Editor

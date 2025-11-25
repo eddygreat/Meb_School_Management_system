@@ -10,8 +10,9 @@ python-dotenv==1.0.1
 sqlalchemy==2.0.29
 alembic==1.13.1
 psycopg2-binary==2.9.9 # Sync driver for Alembic
+aiosqlite==0.20.0 # Async driver for SQLite (local dev)
 asyncpg==0.29.0 # Async driver for PostgreSQL
 
 # Authentication
 python-jose[cryptography]==3.3.0
-passlib[bcrypt]==2024.1
+passlib[bcrypt]==1.7.4

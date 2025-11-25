@@ -1,39 +1,37 @@
 version: '3.9'
 services:
   db:
-    image: postgres:15
+    image: postgres:15-alpine
     environment:
-      POSTGRES_DB: sms
-      POSTGRES_USER: sms_user
-      POSTGRES_PASSWORD: sms_password
+      POSTGRES_DB: school_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mysecretpassword
     ports:
       - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   redis:
-    image: redis:7
+    image: redis:7-alpine
     ports:
       - "6379:6379"
 
   backend:
-    build: ./backend
+    build:
+      context: .
+      dockerfile: Dockerfile # Use the main Dockerfile
     env_file:
-      - ./backend/.env
+      - ./backend/.env.local # Use the SQLite env file for local dev
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_healthy
     ports:
-      - "8000:8000"
-
-  frontend:
-    build: ./frontend
-    ports:
-      - "5173:5173"
-    environment:
-      - VITE_API_BASE=http://localhost:8000
-    depends_on:
-      - backend
+      - "8080:8080" # The backend runs on port 8080 inside the container
 
 volumes:
   db_data:

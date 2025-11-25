@@ -20,8 +20,8 @@ async def register_admin(payload: RegisterAdmin, db: AsyncSession = Depends(get_
     user = User(email=payload.email, full_name=payload.full_name, role="admin", hashed_password=get_password_hash(payload.password))
     db.add(user)
     await db.commit()
-    await db.refresh(user)
-    return {"id": user.id, "email": user.email, "full_name": user.full_name, "role": user.role}
+    await db.refresh(user) # Refresh the user object to get the ID from the DB
+    return user
 
 @router.post("/login", response_model=Token)
 async def login(payload: LoginRequest, db: AsyncSession = Depends(get_db)):
