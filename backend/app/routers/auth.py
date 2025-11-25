@@ -31,5 +31,8 @@ async def login(payload: LoginRequest, db: AsyncSession = Depends(get_db)):
 
     if not user.check_password(payload.password):
         raise HTTPException(status_code=400, detail="Incorrect email or password")
-    token = create_access_token({"sub": str(user.id), "role": user.role})
+        
+    # The 'sub' (subject) of the token should be the user's email.
+    # This is the standard and what get_current_user expects.
+    token = create_access_token({"sub": user.email, "role": user.role.value})
     return {"access_token": token, "token_type": "bearer"}

@@ -1,19 +1,35 @@
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
+from typing import List
 
 class Settings(BaseSettings):
-    APP_NAME: str = "SchoolMS"
-    ENV: str = "dev"
+    """
+    Application settings loaded from environment variables.
+    Pydantic-settings will automatically look for a .env file for local development.
+    """
+    # Core application settings
+    APP_NAME: str = "School Management System"
     API_PREFIX: str = "/api"
+
+    # Security and authentication
     SECRET_KEY: str
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    ALGORITHM: str = "HS256"
+
+    # Database settings
     DATABASE_URL: str
-    CORS_ORIGINS: str = "http://localhost:5173"
-    REDIS_URL: str = "redis://localhost:6379/0"
+
+    # CORS settings - a list of allowed origins
+    CORS_ORIGINS: List[str] = ["http://localhost:5173"]
+
+    # Email settings
     EMAIL_FROM: str = "noreply@example.com"
+
+    # Payment gateway secrets (optional)
     PAYSTACK_SECRET_KEY: str | None = None
     FLUTTERWAVE_SECRET_KEY: str | None = None
 
     class Config:
         env_file = ".env"
+        env_file_encoding = "utf-8"
 
 settings = Settings()

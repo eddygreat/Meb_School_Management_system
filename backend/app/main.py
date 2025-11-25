@@ -20,6 +20,9 @@ origins = [
     "http://localhost:3000", # Common for Create React App
 ]
 
+# In production, with the Netlify proxy, the backend will see requests as coming
+# from the same origin. However, this CORS configuration is essential for local
+# development where the frontend and backend run on different ports.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -34,3 +37,11 @@ app.include_router(api_router, prefix=settings.API_PREFIX)
 @app.get("/")
 async def root():
     return {"message": "Welcome to the School Management System API"}
+
+@app.get("/api/healthcheck", tags=["Health Check"])
+def health_check():
+    """
+    Simple endpoint for the hosting service (e.g., Render) to check
+    if the application is running and responsive.
+    """
+    return {"status": "ok"}

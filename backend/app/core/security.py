@@ -1,24 +1,27 @@
-from datetime import datetime, timedelta
-from jose import jwt, JWTError
+from datetime import datetime, timedelta, timezone
 from passlib.context import CryptContext
+from jose import jwt
 from app.core.config import settings
 
-# Use bcrypt for compatibility with existing hashes/tests. Keep deprecated="auto"
-# so passlib can upgrade hashes later if configured.
-# Use Argon2 for password hashing. Argon2 avoids bcrypt's 72-byte limit and
-# doesn't depend on a potentially problematic bcrypt binary in the container.
-# `argon2-cffi` is included in requirements.txt.
-pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
-ALGORITHM = "HS256"
-
-def create_access_token(data: dict, expires_minutes: int | None = None) -> str:
-    to_encode = data.copy()
-    expire = datetime.utcnow() + timedelta(minutes=expires_minutes or settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    to_encode.update({"exp": expire})
-    return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=ALGORITHM)
+# Setup the password hashing context
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """Verifies a plain password against a hashed one."""
     return pwd_context.verify(plain_password, hashed_password)
 
 def get_password_hash(password: str) -> str:
+    """Hashes a plain password."""
     return pwd_context.hash(password)
+
+def create_access_token(data: dict) -> str:
+    """
+    Creates a new JWT access token.
+    """
+    to_encode = data.copy()
+    expire = datetime.now(timezone.utc) + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(
+        to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM
+    )
+    return encoded_jwt

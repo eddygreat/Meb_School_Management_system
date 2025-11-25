@@ -1,9 +1,15 @@
-fastapi
-uvicorn
-gunicorn
-pydantic-settings
-python-dotenv
+# It is a best practice to pin dependencies to ensure reproducible builds.
+# These versions are examples. You can generate your current versions with `pip freeze > requirements.txt`.
+fastapi==0.110.0
+uvicorn==0.29.0
+gunicorn==21.2.0
+pydantic-settings==2.2.1
+python-dotenv==1.0.1
 
-# Database dependencies for async operations
-sqlalchemy
-asyncpg # Async driver for PostgreSQL. Use a different driver if you use another DB.
+# Database
+sqlalchemy==2.0.29
+asyncpg==0.29.0 # Async driver for PostgreSQL
+
+# Authentication
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==2024.1
