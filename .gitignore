@@ -8,6 +8,7 @@ frontend/coverage
 # Backend
 backend/.venv
 backend/venv
+venv
 backend/__pycache__
 backend/.env
 backend/test_app_ci.db
