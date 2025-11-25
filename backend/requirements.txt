@@ -4,6 +4,6 @@ gunicorn
 pydantic-settings
 python-dotenv
 
-# Add other dependencies your project needs below, for example:
-# sqlalchemy
-# psycopg2-binary
+# Database dependencies for async operations
+sqlalchemy
+asyncpg # Async driver for PostgreSQL. Use a different driver if you use another DB.
