@@ -25,13 +25,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-COPY backend/requirements.txt .
+COPY backend/requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the built frontend assets to the /app/static directory.
 COPY --from=frontend-builder /app/frontend/dist ./static
 # Copy the backend application code directly into the /app directory.
-COPY backend/ .
+COPY backend/app ./app
 
 # Create and switch to a non-root user for security
 RUN useradd --create-home appuser
