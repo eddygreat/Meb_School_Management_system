@@ -10,6 +10,6 @@
 # This avoids CORS errors in the browser.
 [[redirects]]
   from = "/api/*"
-  # IMPORTANT: Replace this placeholder with the public URL provided by Railway for your backend service.
-  to = "https://your-backend-service-name.up.railway.app/api/:splat"
+  # IMPORTANT: Replace this placeholder with the public URL provided by Render for your backend service.
+  to = "https://meb-school-management-system-1-wkq1.onrender.com/api/:splat"
   status = 200
