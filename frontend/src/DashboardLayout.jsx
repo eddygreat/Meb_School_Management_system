@@ -1,12 +1,12 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from './context/AuthContext';
 
-import AdminSidebar from '../components/sidebars/AdminSidebar';
-import TeacherSidebar from '../components/sidebars/TeacherSidebar';
-import StudentSidebar from '../components/sidebars/StudentSidebar';
-import ParentSidebar from '../components/sidebars/ParentSidebar';
-import Header from '../components/Header';
+import AdminSidebar from './components/sidebars/AdminSidebar';
+import TeacherSidebar from './components/sidebars/TeacherSidebar';
+import StudentSidebar from './components/sidebars/StudentSidebar';
+import ParentSidebar from './components/sidebars/ParentSidebar';
+import Header from './components/Header';
 
 const sidebars = {
   admin: <AdminSidebar />,
