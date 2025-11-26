@@ -15,11 +15,11 @@ COPY requirements.txt .
 # Install the dependencies.
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the backend application code into the container.
-# The '.' means "copy everything from the current directory (the backend folder) into the container's WORKDIR".
-COPY . .
+# Copy the application code from the local 'app' directory into the container's WORKDIR ('/app').
+# This ensures the structure is /app/main.py, /app/core, etc.
+COPY app/ .
 
 # Command to run your application using Gunicorn.
-# This command assumes your main FastAPI file is 'main.py' inside the 'app' folder,
-# and the FastAPI instance is named 'app'. It binds to the port Render expects.
-CMD ["gunicorn", "-k", "uvicorn.workers.UvicornWorker", "-b", "0.0.0.0:10000", "app.main:app"]
+# Now that the structure is correct, gunicorn can find 'main:app'.
+# The working directory is /app, so it looks for main.py inside it.
+CMD ["gunicorn", "-k", "uvicorn.workers.UvicornWorker", "-b", "0.0.0.0:10000", "main:app"]
