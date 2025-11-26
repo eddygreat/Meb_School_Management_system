@@ -6,6 +6,11 @@
   command = "npm run build"
   publish = "dist"
 
+# Configuration for secrets scanning.
+# This tells Netlify to ignore the VITE_API_BASE_URL key when scanning for secrets.
+[secrets_scanning]
+  omit_keys = ["VITE_API_BASE_URL"]
+
 # Proxy rule to redirect API requests to your backend.
 # This avoids CORS errors in the browser.
 [[redirects]]
