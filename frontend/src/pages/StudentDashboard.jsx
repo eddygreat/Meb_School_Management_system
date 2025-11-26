@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { AcademicCapIcon, CheckBadgeIcon, DocumentTextIcon, SparklesIcon } from '@heroicons/react/24/outline';
+import MebBot from '../components/Chatbot/MebBot';
+import { FaCommentDots, FaTimes } from 'react-icons/fa';
 
 // Reusable StatCard, consistent with other dashboards
 const StatCard = ({ title, value, icon, color, link }) => {
@@ -23,6 +25,8 @@ const StatCard = ({ title, value, icon, color, link }) => {
 
 export default function StudentDashboard(){
   const { user } = useAuth();
+  const [showChatbot, setShowChatbot] = useState(false);
+
   return (
     <div>
       <h1 className="text-3xl font-bold text-gray-800 mb-6">Welcome, {user?.name || 'Student'}!</h1>
@@ -73,6 +77,42 @@ export default function StudentDashboard(){
           </ul>
         </div>
       </div>
+
+      {/* Chatbot Container */}
+      <div style={chatbotContainerStyle}>
+        {showChatbot && <MebBot />}
+      </div>
+
+      {/* Chatbot Toggle Button */}
+      <button onClick={() => setShowChatbot((prev) => !prev)} style={chatbotButtonStyle}>
+        {showChatbot ? <FaTimes /> : <FaCommentDots />}
+      </button>
     </div>
   );
 }
+
+const chatbotContainerStyle = {
+  position: 'fixed',
+  bottom: '100px',
+  right: '30px',
+  zIndex: 1000,
+};
+
+const chatbotButtonStyle = {
+  position: 'fixed',
+  bottom: '30px',
+  right: '30px',
+  backgroundColor: '#007bff',
+  color: 'white',
+  width: '60px',
+  height: '60px',
+  borderRadius: '50%',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  fontSize: '24px',
+  border: 'none',
+  cursor: 'pointer',
+  boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
+  zIndex: 1001,
+};
