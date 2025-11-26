@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { AcademicCapIcon, CheckBadgeIcon, DocumentTextIcon, SparklesIcon } from '@heroicons/react/24/outline';
-import MebBot from '../../ChatBot/MebBot'; // Corrected import path
+import MebBot from '../../components/ChatBot/MebBot.jsx'; // Corrected import path
 import { FaCommentDots, FaTimes } from 'react-icons/fa';
 
 const CHATBOT_Z_INDEX = 1000;
