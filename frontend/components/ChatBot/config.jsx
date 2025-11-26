@@ -1,5 +1,5 @@
 import { createChatBotMessage } from 'react-chatbot-kit';
-import Options from './widgets/Options';
+import Options from './Options';
 
 const botName = 'MebBot';
 
