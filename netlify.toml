@@ -11,5 +11,5 @@
 [[redirects]]
   from = "/api/*"
   # IMPORTANT: Replace this placeholder with the public URL provided by Render for your backend service.
-  to = "https://meb-school-management-system-1-wkq1.onrender.com"
+  to = "https://meb-school-management-system-1-wkq1.onrender.com/:splat"
   status = 200
