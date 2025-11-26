@@ -8,6 +8,7 @@
 
 # Configuration for secrets scanning.
 # This tells Netlify to ignore the VITE_API_BASE_URL key when scanning for secrets.
+
 [secrets_scanning]
   omit_keys = ["VITE_API_BASE_URL"]
 

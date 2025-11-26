@@ -15,7 +15,9 @@ export default defineConfig(({ command, mode }) => {
       proxy: {
         '/api': {
           // Forward API requests to your Render backend
-          target: 'https://meb-school-management-system-1-wkq1.onrender.com',
+          // This URL is now read from a non-VITE prefixed env variable
+          // to avoid being exposed in the frontend build.
+          target: env.BACKEND_URL,
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, ''),
         }
