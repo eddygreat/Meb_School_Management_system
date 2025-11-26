@@ -15,11 +15,11 @@ COPY requirements.txt .
 # Install the dependencies.
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the application code from the local 'app' directory into the container's WORKDIR ('/app').
-# This ensures the structure is /app/main.py, /app/core, etc.
-COPY app/ .
+# Copy the entire backend directory contents (including the 'app' folder) into the container's WORKDIR.
+# This creates the correct /app/app structure that your absolute imports expect.
+COPY . .
 
 # Command to run your application using Gunicorn.
-# Now that the structure is correct, gunicorn can find 'main:app'.
-# The working directory is /app, so it looks for main.py inside it.
-CMD ["gunicorn", "-k", "uvicorn.workers.UvicornWorker", "-b", "0.0.0.0:10000", "main:app"]
+# Gunicorn needs to be told where to find the application module.
+# Since the code is now in /app/app/main.py, the correct module path is 'app.main:app'.
+CMD ["gunicorn", "-k", "uvicorn.workers.UvicornWorker", "-b", "0.0.0.0:10000", "app.main:app"]
