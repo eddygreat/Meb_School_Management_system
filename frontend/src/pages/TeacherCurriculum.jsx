@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import apiClient from '../services/api';
+import apiClient from '../components/api';
 import { useAuth } from '../context/AuthContext';
 import Input from '../components/ui/Input'; // Use the shared Input component
 
