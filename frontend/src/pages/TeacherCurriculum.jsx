@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
-import client from '../api/client'
-import Input from './Input'
-import { useAuth } from '../context/AuthContext'
+import React, { useEffect, useState } from 'react';
+import apiClient from '../services/api';
+import { useAuth } from '../context/AuthContext';
+import Input from '../components/ui/Input'; // Use the shared Input component
 
 export default function TeacherCurriculum(){
   const { user } = useAuth()
@@ -20,48 +20,48 @@ export default function TeacherCurriculum(){
 
   const load = async () => {
     if (user?.teacher_id) {
-      const { data } = await client.get('/api/curriculum/lesson-plans', { params: { teacher_id: user.teacher_id } })
+      const { data } = await apiClient.get('/curriculum/lesson-plans', { params: { teacher_id: user.teacher_id } })
       setLessonPlans(data)
     }
     if (subjectId) {
-      const { data } = await client.get('/api/curriculum/resources', { params: { subject_id: subjectId } })
+      const { data } = await apiClient.get('/curriculum/resources', { params: { subject_id: subjectId } })
       setResources(data)
     }
     if (classId) {
-      const { data } = await client.get('/api/curriculum/assignments', { params: { class_id: classId } })
+      const { data } = await apiClient.get('/curriculum/assignments', { params: { class_id: classId } })
       setAssignments(data)
     }
   }
 
   const createLessonPlan = async () => {
-    if (!teacherId || !subjectId || !lpForm.title) return
-    await client.post('/api/curriculum/lesson-plans', { teacher_id: Number(teacherId), subject_id: Number(subjectId), ...lpForm, week_no: Number(lpForm.week_no) })
+    if (!user?.teacher_id || !subjectId || !lpForm.title) return
+    await apiClient.post('/curriculum/lesson-plans', { teacher_id: Number(user.teacher_id), subject_id: Number(subjectId), ...lpForm, week_no: Number(lpForm.week_no) })
     setLpForm({ title:'', content:'', week_no:1 })
     await load()
   }
 
   const createResource = async () => {
     if (!subjectId || !resForm.title || !resForm.url) return
-    await client.post('/api/curriculum/resources', { subject_id: Number(subjectId), ...resForm })
+    await apiClient.post('/curriculum/resources', { subject_id: Number(subjectId), ...resForm })
     setResForm({ title:'', url:'' })
     await load()
   }
 
   const createAssignment = async () => {
-    if (!classId || !subjectId || !teacherId || !asgForm.title || !asgForm.due_date) return
-    await client.post('/api/curriculum/assignments', { class_id: Number(classId), subject_id: Number(subjectId), teacher_id: Number(teacherId), ...asgForm })
+    if (!classId || !subjectId || !user?.teacher_id || !asgForm.title || !asgForm.due_date) return
+    await apiClient.post('/curriculum/assignments', { class_id: Number(classId), subject_id: Number(subjectId), teacher_id: Number(user.teacher_id), ...asgForm })
     setAsgForm({ title:'', description:'', due_date:'' })
     await load()
   }
 
   const loadSubmissions = async (assignmentId) => {
-    const { data } = await client.get('/api/curriculum/submissions', { params: { assignment_id: assignmentId } })
+    const { data } = await apiClient.get('/curriculum/submissions', { params: { assignment_id: assignmentId } })
     setSubmissions(data)
   }
 
   const gradeSubmission = async () => {
     if (!gradeForm.submission_id) return
-    await client.post('/api/curriculum/submissions/grade', { submission_id: Number(gradeForm.submission_id), score: Number(gradeForm.score || 0), feedback: gradeForm.feedback })
+    await apiClient.post('/curriculum/submissions/grade', { submission_id: Number(gradeForm.submission_id), score: Number(gradeForm.score || 0), feedback: gradeForm.feedback })
     setGradeForm({ submission_id:'', score:'', feedback:'' })
     // refresh current list
     if (assignments[0]) await loadSubmissions(assignments[0].id)

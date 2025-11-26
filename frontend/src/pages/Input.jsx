@@ -1,10 +1,11 @@
 import React from 'react';
 
-export default function Input({ label, value, onChange, type = "text", placeholder = "" }) {
-  return (
-    <div>
-      <label className="block text-sm">{label}</label>
-      <input type={type} className="border p-2 rounded w-full" value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} />
-    </div>
-  );
-}
+const Input = ({ label, value, onChange, ...props }) => (
+  <label className="block">
+    <span className="text-sm text-gray-700">{label}</span>
+    <input className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" 
+           value={value} onChange={(e) => onChange(e.target.value)} {...props} />
+  </label>
+);
+
+export default Input;

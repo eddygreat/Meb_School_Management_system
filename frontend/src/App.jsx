@@ -1,9 +1,10 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import LandingPage from '/src/pages/LandingPage.jsx';
 
 import Login from './pages/Login';
+import DashboardLayout from './layouts/DashboardLayout';
 import Signup from './pages/Signup';
 import PasswordResetRequest from './pages/PasswordResetRequest';
 import PasswordResetConfirm from './pages/PasswordResetConfirm';
@@ -37,19 +38,18 @@ import ParentDashboard from './pages/ParentDashboard';
 import ParentInvoices from './pages/ParentInvoices';
 import ParentMessages from './pages/ParentMessages';
 
-function ProtectedRoute({ children, role }) {
+function ProtectedRoute({ role }) {
   const { user } = useAuth();
 
   if (!user) {
     return <Navigate to="/login" />;
   }
 
-  if (role && user.role !== role) {
-    // Optional: redirect to a 'not authorized' page or back to their dashboard
+  if (role && user.role !== role) { 
     return <Navigate to={`/${user.role}/dashboard`} />;
   }
 
-  return children;
+  return <DashboardLayout />;
 }
 
 function AppRoutes() {
@@ -65,44 +65,40 @@ function AppRoutes() {
       <Route path="/password-reset/request" element={<PasswordResetRequest />} />
       <Route path="/password-reset/confirm" element={<PasswordResetConfirm />} />
 
-      {/* 
-        The old root path logic is now handled by the new "/" route.
-        If a user is logged in, they are redirected to their dashboard.
-        If they are not logged in, they see the Landing Page.
+      {/* Protected Routes with Dashboard Layout */}
+      <Route element={<ProtectedRoute />}>
+        {/* Admin Routes */}
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/users" element={<AdminUsers />} />
+        <Route path="/admin/timetable" element={<AdminTimetable />} />
+        <Route path="/admin/invoices" element={<AdminInvoices />} />
+        <Route path="/admin/discipline" element={<AdminDiscipline />} />
+        <Route path="/admin/analytics" element={<AdminAnalytics />} />
+        <Route path="/admin/settings" element={<AdminSettings />} />
+        <Route path="/admin/exports" element={<AdminExports />} />
+        <Route path="/admin/face/enroll" element={<FaceEnroll />} />
 
-      */}
+        {/* Teacher Routes */}
+        <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
+        <Route path="/teacher/curriculum" element={<TeacherCurriculum />} />
+        <Route path="/teacher/grades-entry" element={<TeacherGradesEntry />} />
+        <Route path="/teacher/attendance" element={<TeacherAttendance />} />
+        <Route path="/teacher/messages" element={<TeacherMessages />} />
+        <Route path="/teacher/timetable" element={<TeacherTimetable />} />
+        <Route path="/teacher/discipline" element={<TeacherDiscipline />} />
 
-      {/* Admin Routes */}
-      <Route path="/admin/dashboard" element={<ProtectedRoute role="admin"><AdminDashboard /></ProtectedRoute>} />
-      <Route path="/admin/users" element={<ProtectedRoute role="admin"><AdminUsers /></ProtectedRoute>} />
-      <Route path="/admin/timetable" element={<ProtectedRoute role="admin"><AdminTimetable /></ProtectedRoute>} />
-      <Route path="/admin/invoices" element={<ProtectedRoute role="admin"><AdminInvoices /></ProtectedRoute>} />
-      <Route path="/admin/discipline" element={<ProtectedRoute role="admin"><AdminDiscipline /></ProtectedRoute>} />
-      <Route path="/admin/analytics" element={<ProtectedRoute role="admin"><AdminAnalytics /></ProtectedRoute>} />
-      <Route path="/admin/settings" element={<ProtectedRoute role="admin"><AdminSettings /></ProtectedRoute>} />
-      <Route path="/admin/exports" element={<ProtectedRoute role="admin"><AdminExports /></ProtectedRoute>} />
-      <Route path="/admin/face/enroll" element={<ProtectedRoute role="admin"><FaceEnroll /></ProtectedRoute>} />
+        {/* Student Routes */}
+        <Route path="/student/dashboard" element={<StudentDashboard />} />
+        <Route path="/student/assignments" element={<StudentAssignments />} />
+        <Route path="/student/checkin" element={<StudentCheckin />} />
+        <Route path="/student/report" element={<StudentReport />} />
+        <Route path="/student/timetable" element={<StudentTimetable />} />
 
-      {/* Teacher Routes */}
-      <Route path="/teacher/dashboard" element={<ProtectedRoute role="teacher"><TeacherDashboard /></ProtectedRoute>} />
-      <Route path="/teacher/curriculum" element={<ProtectedRoute role="teacher"><TeacherCurriculum /></ProtectedRoute>} />
-      <Route path="/teacher/grades-entry" element={<ProtectedRoute role="teacher"><TeacherGradesEntry /></ProtectedRoute>} />
-      <Route path="/teacher/attendance" element={<ProtectedRoute role="teacher"><TeacherAttendance /></ProtectedRoute>} />
-      <Route path="/teacher/messages" element={<ProtectedRoute role="teacher"><TeacherMessages /></ProtectedRoute>} />
-      <Route path="/teacher/timetable" element={<ProtectedRoute role="teacher"><TeacherTimetable /></ProtectedRoute>} />
-      <Route path="/teacher/discipline" element={<ProtectedRoute role="teacher"><TeacherDiscipline /></ProtectedRoute>} />
-
-      {/* Student Routes */}
-      <Route path="/student/dashboard" element={<ProtectedRoute role="student"><StudentDashboard /></ProtectedRoute>} />
-      <Route path="/student/assignments" element={<ProtectedRoute role="student"><StudentAssignments /></ProtectedRoute>} />
-      <Route path="/student/checkin" element={<ProtectedRoute role="student"><StudentCheckin /></ProtectedRoute>} />
-      <Route path="/student/report" element={<ProtectedRoute role="student"><StudentReport /></ProtectedRoute>} />
-      <Route path="/student/timetable" element={<ProtectedRoute role="student"><StudentTimetable /></ProtectedRoute>} />
-
-      {/* Parent Routes */}
-      <Route path="/parent/dashboard" element={<ProtectedRoute role="parent"><ParentDashboard /></ProtectedRoute>} />
-      <Route path="/parent/invoices" element={<ProtectedRoute role="parent"><ParentInvoices /></ProtectedRoute>} />
-      <Route path="/parent/messages" element={<ProtectedRoute role="parent"><ParentMessages /></ProtectedRoute>} />
+        {/* Parent Routes */}
+        <Route path="/parent/dashboard" element={<ParentDashboard />} />
+        <Route path="/parent/invoices" element={<ParentInvoices />} />
+        <Route path="/parent/messages" element={<ParentMessages />} />
+      </Route>
 
       {/* Fallback Route */}
       <Route path="*" element={<Navigate to="/" />} />
