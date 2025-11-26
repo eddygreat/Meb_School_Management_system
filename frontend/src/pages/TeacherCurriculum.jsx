@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import apiClient from '../services/api';
+import apiClient from '../components/api';
 import { useAuth } from '../context/AuthContext';
-import Input from '../components/ui/Input';
+import Input from './Input';
 export default function TeacherCurriculum(){
   const { user } = useAuth()
   const [subjectId, setSubjectId] = useState('')

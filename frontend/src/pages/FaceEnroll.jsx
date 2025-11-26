@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import apiClient from '../services/api';
+import React, { useState } from 'react';
+import apiClient from '../components/api';
 
 export default function FaceEnroll(){
   const [file, setFile] = useState(null)

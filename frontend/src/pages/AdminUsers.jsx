@@ -1,8 +1,8 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { PencilIcon, TrashIcon, UserPlusIcon } from '@heroicons/react/24/outline';
-import EmptyState from '../components/ui/EmptyState';
-import LoadingSpinner from '../components/ui/LoadingSpinner';
-import apiClient from '../services/api';
+import EmptyState from '../EmptyState';
+import LoadingSpinner from '../LoadingSpinner';
+import apiClient from '../components/api';
 
 // Mock data that our simulated API will return
 const mockUsers = [
