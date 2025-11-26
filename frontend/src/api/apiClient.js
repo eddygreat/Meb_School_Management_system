@@ -4,7 +4,7 @@ import axios from 'axios';
 // The baseURL is read from your environment variables, which allows you to
 // easily switch between local and production backend URLs.
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE,
+  baseURL: import.meta.env.VITE_API_BASE_URL,
 });
 
 // You can also add interceptors here for handling tokens, errors, etc.
