@@ -1,0 +1,10 @@
+/* Styles for the main chatbot container */
+.meb-bot-container {
+  /* Example styles - adjust as needed for your dashboard layout */
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000; /* Ensures the chatbot appears above other content */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}
