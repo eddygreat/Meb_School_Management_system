@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { AcademicCapIcon, CheckBadgeIcon, DocumentTextIcon, SparklesIcon } from '@heroicons/react/24/outline';
-import MebBot from '../../../MebBot';
+import MebBot from '../../ChatBot/MebBot'; // Corrected import path
 import { FaCommentDots, FaTimes } from 'react-icons/fa';
+
+const CHATBOT_Z_INDEX = 1000;
 
 // Reusable StatCard, consistent with other dashboards
 const StatCard = ({ title, value, icon, color, link }) => {
@@ -25,10 +27,10 @@ const StatCard = ({ title, value, icon, color, link }) => {
 
 export default function StudentDashboard(){
   const { user } = useAuth();
-  const [showChatbot, setShowChatbot] = useState(false);
+  const [isChatbotOpen, setChatbotOpen] = useState(false);
 
   return (
-    <div>
+    <div className="relative">
       <h1 className="text-3xl font-bold text-gray-800 mb-6">Welcome, {user?.name || 'Student'}!</h1>
 
       {/* Stats Cards */}
@@ -78,41 +80,20 @@ export default function StudentDashboard(){
         </div>
       </div>
 
-      {/* Chatbot Container */}
-      <div style={chatbotContainerStyle}>
-        {showChatbot && <MebBot />}
-      </div>
-
       {/* Chatbot Toggle Button */}
-      <button onClick={() => setShowChatbot((prev) => !prev)} style={chatbotButtonStyle}>
-        {showChatbot ? <FaTimes /> : <FaCommentDots />}
+      <button
+        onClick={() => setChatbotOpen(!isChatbotOpen)}
+        className="fixed bottom-5 right-5 bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 transition z-50"
+        style={{ zIndex: CHATBOT_Z_INDEX + 1 }}
+        aria-label={isChatbotOpen ? 'Close chat' : 'Open chat'}
+      >
+        {isChatbotOpen ? <FaTimes size={24} /> : <FaCommentDots size={24} />}
       </button>
+
+      {/* MebBot Integration */}
+      {isChatbotOpen && (
+        <MebBot />
+      )}
     </div>
   );
 }
-
-const chatbotContainerStyle = {
-  position: 'fixed',
-  bottom: '100px',
-  right: '30px',
-  zIndex: 1000,
-};
-
-const chatbotButtonStyle = {
-  position: 'fixed',
-  bottom: '30px',
-  right: '30px',
-  backgroundColor: '#007bff',
-  color: 'white',
-  width: '60px',
-  height: '60px',
-  borderRadius: '50%',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  fontSize: '24px',
-  border: 'none',
-  cursor: 'pointer',
-  boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
-  zIndex: 1001,
-};
