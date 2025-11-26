@@ -14,8 +14,10 @@ export default defineConfig(({ command, mode }) => {
       open: true,
       proxy: {
         '/api': {
-          target: env.VITE_API_BASE_URL,
-          changeOrigin: true
+          // Forward API requests to your Render backend
+          target: 'https://meb-school-management-system-1-wkq1.onrender.com',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api/, ''),
         }
       }
     },
