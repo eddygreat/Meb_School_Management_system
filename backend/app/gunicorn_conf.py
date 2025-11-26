@@ -6,7 +6,11 @@ import multiprocessing
 # Server socket
 # Bind to 0.0.0.0 to allow external connections (e.g., from Docker's host)
 # The port is set from an environment variable, defaulting to 8080.
-bind = f"0.0.0.0:{os.getenv('PORT', '8080')} --timeout 120"
+bind = f"0.0.0.0:{os.getenv('PORT', '8080')}"
+
+# Worker timeout
+# Workers silent for more than this many seconds are killed and restarted.
+timeout = 120
 
 # Worker processes
 # A common recommendation is (2 * number_of_cores) + 1.
