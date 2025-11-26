@@ -47,6 +47,7 @@ This allows for a complete walkthrough of the user interface, role-based access 
 *   **Role-Based Access:** On visiting the site, a "Role Switcher" component is available. This allows you to dynamically change the user's role between `Admin`, `Student`, `Teacher`, and `Parent` to explore the different views and permissions available to each role. Please note, this is a temporary feature for demonstration purposes. In a production environment, user roles would be assigned by an administrator and would not be user-changeable.
 *   **Simulated API Calls:** Pages like the Admin User Management dashboard simulate asynchronous data fetching, complete with loading spinners and error states, to demonstrate professional data handling practices.
 *   **Feature-Rich UI:** Key features, such as the multi-step "Face Enrollment" process, have a complete and polished user interface to showcase the full vision of the application.
+*   **Interactive Chatbot (`MebBot`):** The student dashboard includes an interactive chatbot to assist students with their assignments. The conversation is simulated with predefined responses to showcase the look, feel, and potential of this feature.
 
 This approach ensures that development and demonstration of the frontend can continue smoothly while the backend deployment issues are addressed separately.
 
