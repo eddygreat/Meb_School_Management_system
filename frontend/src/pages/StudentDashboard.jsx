@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { AcademicCapIcon, CheckBadgeIcon, DocumentTextIcon, SparklesIcon } from '@heroicons/react/24/outline';
-import MebBot from '../../components/Chatbot/MebBot';
+import MebBot from '../../../MebBot';
 import { FaCommentDots, FaTimes } from 'react-icons/fa';
 
 // Reusable StatCard, consistent with other dashboards
