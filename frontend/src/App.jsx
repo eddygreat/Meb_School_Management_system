@@ -4,7 +4,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import LandingPage from '/src/pages/LandingPage.jsx';
 
 import Login from './pages/Login';
-import DashboardLayout from './layouts/DashboardLayout';
+import DashboardLayout from './DashboardLayout';
 import Signup from './pages/Signup';
 import PasswordResetRequest from './pages/PasswordResetRequest';
 import PasswordResetConfirm from './pages/PasswordResetConfirm';
