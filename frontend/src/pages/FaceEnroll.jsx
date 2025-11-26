@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import client from '../api/client'
+import apiClient from '../services/api';
 
 export default function FaceEnroll(){
   const [file, setFile] = useState(null)
@@ -13,7 +13,7 @@ export default function FaceEnroll(){
     try {
       const form = new FormData()
       form.append('image', file)
-      const { data } = await client.post('/api/biometric/enroll', form, { headers: { 'Content-Type': 'multipart/form-data' } })
+      const { data } = await apiClient.post('/api/biometric/enroll', form, { headers: { 'Content-Type': 'multipart/form-data' } })
       setStatus(`Enrolled for user #${data.user_id}`)
     } catch (e) {
       setError(e?.response?.data?.detail || 'Enroll failed')
