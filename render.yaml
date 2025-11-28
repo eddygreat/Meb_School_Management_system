@@ -7,11 +7,12 @@ services:
     env: docker
     repo: https://github.com/eddygreat/Meb_School_Management_system # Your GitHub repository URL
     branch: main # Or your specific deployment branch
-    dockerfilePath: ./
+    dockerContext: ./backend
+    dockerfilePath: ./backend/Dockerfile
     # This command runs after a new build, but before the new version is deployed.
     # It's the perfect place for database migrations.
     preDeploy:
-      command: "alembic upgrade head"
+      command: "cd backend && alembic upgrade head"
 
     # Define environment variables.
     # The DATABASE_URL is automatically provided by Render when you link a database.
