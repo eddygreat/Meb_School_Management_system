@@ -6,16 +6,19 @@ services:
     name: meb-school-backend # A name for your service on Render
     env: docker
     repo: https://github.com/eddygreat/Meb_School_Management_system # Your GitHub repository URL
-    branch: main # Or your specific deployment branch
+    branch: new-deployment # Use the branch you are deploying from
     dockerContext: ./backend
     dockerfilePath: ./backend/Dockerfile
+
     # This command runs after a new build, but before the new version is deployed.
     # It's the perfect place for database migrations.
     preDeploy:
       command: "cd backend && alembic upgrade head"
 
+    # Define how your app starts up
+    startCommand: "gunicorn app.main:app --bind 0.0.0.0:$PORT -k uvicorn.workers.UvicornWorker"
+
     # Define environment variables.
-    # The DATABASE_URL is automatically provided by Render when you link a database.
     envVars:
       - key: DATABASE_URL
         fromDatabase:
@@ -24,4 +27,4 @@ services:
       - key: SECRET_KEY
         sync: false # Mark as a secret to be set in the Render dashboard
       - key: BACKEND_CORS_ORIGINS
-        value: '["https://your-frontend-app.onrender.com"]' # TODO: Change this to your actual frontend URL
+        value: '["https://meb-school-frontend.onrender.com"]' # Replace with your actual frontend URL

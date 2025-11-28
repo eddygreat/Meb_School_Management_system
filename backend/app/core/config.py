@@ -1,19 +1,23 @@
-from pydantic import BaseSettings
+from pydantic import BaseSettings, AnyHttpUrl
+from typing import List, Union
+
 
 class Settings(BaseSettings):
-    APP_NAME: str = "SchoolMS"
-    ENV: str = "dev"
+    # Core settings
+    PROJECT_NAME: str = "School Management System API"
     API_PREFIX: str = "/api"
+
+    # Security
     SECRET_KEY: str
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
+
+    # Database
     DATABASE_URL: str
-    BACKEND_CORS_ORIGINS: str = '["http://localhost:5173"]'
-    REDIS_URL: str = "redis://localhost:6379/0"
-    EMAIL_FROM: str = "noreply@example.com"
-    PAYSTACK_SECRET_KEY: str | None = None
-    FLUTTERWAVE_SECRET_KEY: str | None = None
+
+    # CORS
+    BACKEND_CORS_ORIGINS: Union[str, List[AnyHttpUrl]] = []
 
     class Config:
-        env_file = ".env"
+        case_sensitive = True
+
 
 settings = Settings()
