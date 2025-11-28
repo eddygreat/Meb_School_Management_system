@@ -22,3 +22,5 @@ services:
           property: connectionString
       - key: SECRET_KEY
         sync: false # Mark as a secret to be set in the Render dashboard
+      - key: BACKEND_CORS_ORIGINS
+        value: '["https://your-frontend-app.onrender.com"]' # TODO: Change this to your actual frontend URL

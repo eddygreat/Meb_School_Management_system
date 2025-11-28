@@ -24,4 +24,4 @@ RUN useradd --create-home appuser \
 
 USER appuser
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["gunicorn", "-c", "app/gunicorn_conf.py", "app.main:app"]

@@ -30,6 +30,7 @@ services:
     environment:
       - DATABASE_URL=postgresql+asyncpg://postgres:mysecretpassword@db:5432/school_db
       - SECRET_KEY=a_secure_secret_for_local_docker_development
+      - BACKEND_CORS_ORIGINS=["http://localhost:3000","http://localhost:8000"]
     depends_on:
       db:
         condition: service_healthy
