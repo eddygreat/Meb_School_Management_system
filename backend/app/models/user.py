@@ -1,36 +1,41 @@
-from sqlalchemy import Column, Integer, String, Enum as SQLAlchemyEnum
-from sqlalchemy.future import select
+from sqlalchemy import String, Integer, Boolean
+from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.db.base import Base
-from app.core.security import verify_password, get_password_hash
-import enum
-
-class UserRole(str, enum.Enum):
-    admin = "admin"
-    teacher = "teacher"
-    student = "student"
-    parent = "parent"
+from sqlalchemy import select
+from app.core.database import Base
+from app.core.security import get_password_hash, verify_password
+import logging
+logger = logging.getLogger(__name__)
 
 class User(Base):
     __tablename__ = "users"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    email: Mapped[str] = mapped_column(String(255), unique=True, index=True)
+    full_name: Mapped[str] = mapped_column(String(255))
+    hashed_password: Mapped[str] = mapped_column(String(255))
+    role: Mapped[str] = mapped_column(String(50), index=True)  # admin, teacher, parent, student
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
 
-    id = Column(Integer, primary_key=True, index=True)
-    full_name = Column(String, index=True)
-    email = Column(String, unique=True, index=True, nullable=False)
-    hashed_password = Column(String, nullable=False)
-    role = Column(SQLAlchemyEnum(UserRole), nullable=False)
+    @staticmethod
+    async def get_by_email(db: AsyncSession, email: str):
+        result = await db.execute(select(User).where(User.email == email))
+        return result.scalar_one_or_none()
 
-    @classmethod
-    async def get_by_email(cls, db: AsyncSession, email: str):
-        """Fetches a user by their email address."""
-        result = await db.execute(select(cls).filter(cls.email == email))
-        return result.scalars().first()
+    @staticmethod
+    async def get_by_id(db: AsyncSession, id_: int):
+        result = await db.execute(select(User).where(User.id == id_))
+        return result.scalar_one_or_none()
+
+    async def set_password(self, db: AsyncSession, password: str):
+        try:
+            hp = get_password_hash(password)
+            self.hashed_password = hp
+            db.add(self)
+            await db.commit()
+            await db.refresh(self)
+        except Exception as exc:
+            logger.exception("Failed to set password for user %s: %s", getattr(self, 'email', '<unknown>'), exc)
+            raise
 
     def check_password(self, password: str) -> bool:
-        """Verifies the provided password against the stored hash."""
         return verify_password(password, self.hashed_password)
-
-    async def set_password(self, db: AsyncSession, new_password: str):
-        """Sets a new password for the user."""
-        self.hashed_password = get_password_hash(new_password)
-        db.add(self)

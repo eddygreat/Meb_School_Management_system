@@ -20,8 +20,8 @@ async def register_admin(payload: RegisterAdmin, db: AsyncSession = Depends(get_
     user = User(email=payload.email, full_name=payload.full_name, role="admin", hashed_password=get_password_hash(payload.password))
     db.add(user)
     await db.commit()
-    await db.refresh(user) # Refresh the user object to get the ID from the DB
-    return user
+    await db.refresh(user)
+    return {"id": user.id, "email": user.email, "full_name": user.full_name, "role": user.role}
 
 @router.post("/login", response_model=Token)
 async def login(payload: LoginRequest, db: AsyncSession = Depends(get_db)):
@@ -31,8 +31,5 @@ async def login(payload: LoginRequest, db: AsyncSession = Depends(get_db)):
 
     if not user.check_password(payload.password):
         raise HTTPException(status_code=400, detail="Incorrect email or password")
-        
-    # The 'sub' (subject) of the token should be the user's email.
-    # This is the standard and what get_current_user expects.
-    token = create_access_token({"sub": user.email, "role": user.role.value})
+    token = create_access_token({"sub": str(user.id), "role": user.role})
     return {"access_token": token, "token_type": "bearer"}
