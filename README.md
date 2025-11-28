@@ -95,3 +95,6 @@ To get a local copy up and running, follow these simple steps.
 ## Repository
 
 The source code for this project is available on GitHub: https://github.com/eddygreat/Meb_School_Management_system
+
+## This repository includes the pitch deck
+MEB SMS Pitch Deck
