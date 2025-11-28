@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     SECRET_KEY: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
     DATABASE_URL: str
-    CORS_ORIGINS: str = "http://localhost:5173"
+    BACKEND_CORS_ORIGINS: str = '["http://localhost:5173"]'
     REDIS_URL: str = "redis://localhost:6379/0"
     EMAIL_FROM: str = "noreply@example.com"
     PAYSTACK_SECRET_KEY: str | None = None
