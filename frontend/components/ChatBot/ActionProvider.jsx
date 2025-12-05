@@ -1,5 +1,5 @@
 import React from 'react';
-import apiClient from '@components/api';
+import apiClient from '@/api/apiClient';
 
 /**
  * The ActionProvider defines the actions the chatbot can take.

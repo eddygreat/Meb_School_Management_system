@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import apiClient from '../components/api';
+import apiClient from '../api/apiClient';
 
 export default function FaceEnroll() {
   const videoRef = useRef(null);

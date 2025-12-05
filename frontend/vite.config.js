@@ -19,7 +19,6 @@ export default defineConfig(({ command, mode }) => {
           // to avoid being exposed in the frontend build.
           target: env.BACKEND_URL || 'http://localhost:8000',
           changeOrigin: true,
-          changeOrigin: true,
         }
       }
     },

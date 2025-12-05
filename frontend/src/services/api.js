@@ -1,4 +1,4 @@
-import apiClient from '../components/api';
+import apiClient from '../api/apiClient';
 import { mockUsers, mockAssignments, mockSubmissions, delay } from './mockData';
 
 // Configuration flag to toggle mock mode
