@@ -27,4 +27,4 @@ services:
       - key: SECRET_KEY
         sync: false # Mark as a secret to be set in the Render dashboard
       - key: BACKEND_CORS_ORIGINS
-        value: '["https://meb-school-frontend.onrender.com"]' # Replace with your actual frontend URL
+        value: '["https://mebschoolmanagementsystem.netlify.app", "http://localhost:5173"]' # Replace with your actual frontend URL
