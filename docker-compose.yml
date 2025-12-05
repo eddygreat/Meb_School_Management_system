@@ -1,4 +1,8 @@
+
 version: '3.9'
+
+ENV DEPLOY_DATE=2025-12-05
+
 services:
   db:
     image: postgres:15-alpine
