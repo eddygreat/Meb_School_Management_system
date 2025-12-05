@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 
 class ThreadCreate(BaseModel):
@@ -12,8 +12,7 @@ class ThreadOut(BaseModel):
     parent_user_id: int | None
     subject: str
     created_at: datetime
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 class MessageCreate(BaseModel):
     thread_id: int
@@ -25,8 +24,7 @@ class MessageOut(BaseModel):
     sender_user_id: int | None
     body: str
     created_at: datetime
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 class AnnouncementCreate(BaseModel):
     title: str
@@ -40,8 +38,7 @@ class AnnouncementOut(BaseModel):
     audience_role: str
     created_by_user_id: int | None
     created_at: datetime
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 class NotificationOut(BaseModel):
     id: int
@@ -50,5 +47,4 @@ class NotificationOut(BaseModel):
     payload: str
     is_read: bool
     created_at: datetime
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)

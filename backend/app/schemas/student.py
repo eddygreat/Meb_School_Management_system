@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from datetime import date
 
 class StudentCreate(BaseModel):
@@ -13,5 +13,4 @@ class StudentOut(BaseModel):
     admission_no: str
     class_name: str
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)

@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from datetime import time
 
 class ClassCreate(BaseModel):
@@ -26,29 +26,25 @@ class ScheduleCreate(BaseModel):
 class ClassOut(BaseModel):
     id: int
     name: str
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 class RoomOut(BaseModel):
     id: int
     name: str
     capacity: int
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 class SubjectOut(BaseModel):
     id: int
     name: str
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 class TimeSlotOut(BaseModel):
     id: int
     day_of_week: int
     start_time: time
     end_time: time
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 class ScheduleOut(BaseModel):
     id: int
@@ -57,5 +53,4 @@ class ScheduleOut(BaseModel):
     subject_id: int
     teacher_id: int
     time_slot_id: int
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)

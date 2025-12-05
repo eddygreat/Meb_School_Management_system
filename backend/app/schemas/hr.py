@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from datetime import datetime, date
 
 class EmployeeProfileCreate(BaseModel):
@@ -12,8 +12,7 @@ class EmployeeProfileOut(BaseModel):
     position: str
     salary: float
     hired_at: datetime
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 class PayrollCreate(BaseModel):
     teacher_id: int
@@ -29,8 +28,7 @@ class PayrollOut(BaseModel):
     deductions: float
     net: float
     paid_at: datetime | None
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 class LeaveRequestCreate(BaseModel):
     teacher_id: int
@@ -49,8 +47,7 @@ class LeaveRequestOut(BaseModel):
     reason: str
     status: str
     requested_at: datetime
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 class PerformanceRecordCreate(BaseModel):
     teacher_id: int
@@ -65,5 +62,4 @@ class PerformanceRecordOut(BaseModel):
     score: int
     notes: str
     created_at: datetime
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)

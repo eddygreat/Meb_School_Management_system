@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 
 class YearCreate(BaseModel):
@@ -20,16 +20,14 @@ class GradeEntryCreate(BaseModel):
 class YearOut(BaseModel):
     id: int
     name: str
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
     
 
 class TermOut(BaseModel):
     id: int
     name: str
     year_id: int
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 class GradeEntryOut(BaseModel):
     id: int
@@ -43,8 +41,7 @@ class GradeEntryOut(BaseModel):
     total: float
     grade: str
     remark: str
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 class ReportSubject(BaseModel):
     subject_id: int

@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from datetime import date
 
 class TeacherCreate(BaseModel):
@@ -13,5 +13,4 @@ class TeacherOut(BaseModel):
     staff_no: str
     department: str
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)

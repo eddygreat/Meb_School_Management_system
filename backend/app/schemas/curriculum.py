@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from datetime import datetime, date
 
 class LessonPlanCreate(BaseModel):
@@ -16,8 +16,7 @@ class LessonPlanOut(BaseModel):
     content: str
     week_no: int
     created_at: datetime
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 class ResourceCreate(BaseModel):
     subject_id: int
@@ -30,8 +29,7 @@ class ResourceOut(BaseModel):
     title: str
     url: str
     created_at: datetime
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 class AssignmentCreate(BaseModel):
     class_id: int
@@ -50,8 +48,7 @@ class AssignmentOut(BaseModel):
     description: str
     due_date: date
     created_at: datetime
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 class SubmissionCreate(BaseModel):
     assignment_id: int
@@ -71,5 +68,4 @@ class SubmissionOut(BaseModel):
     score: int
     feedback: str
     submitted_at: datetime
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
