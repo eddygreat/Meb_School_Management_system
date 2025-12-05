@@ -28,3 +28,9 @@ services:
         sync: false # Mark as a secret to be set in the Render dashboard
       - key: BACKEND_CORS_ORIGINS
         value: '["https://mebschoolmanagementsystem.netlify.app", "http://localhost:5173"]' # Replace with your actual frontend URL
+
+databases:
+  - name: Meb_School_Management_system_backend
+    databaseName: meb_school_db
+    user: meb_school_user
+    plan: free
