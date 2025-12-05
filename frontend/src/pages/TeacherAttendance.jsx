@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import client from '../api/client'
 import QRCode from 'react-qr-code'
 
-export default function TeacherAttendance(){
+export default function TeacherAttendance() {
   const [className, setClassName] = useState('Grade 10A')
   const [duration, setDuration] = useState(15)
   const [session, setSession] = useState(null)
@@ -13,7 +13,7 @@ export default function TeacherAttendance(){
     e.preventDefault()
     setError('')
     try {
-      const { data } = await client.post('/api/attendance/session', { class_name: className, duration_minutes: Number(duration) })
+      const { data } = await client.post('/attendance/session', { class_name: className, duration_minutes: Number(duration) })
       setSession(data)
       setRecords([])
     } catch (e) {
@@ -25,16 +25,16 @@ export default function TeacherAttendance(){
     if (!session) return
     const id = setInterval(async () => {
       try {
-        const { data } = await client.get(`/api/attendance/session/${session.id}/records`)
+        const { data } = await client.get(`/attendance/session/${session.id}/records`)
         setRecords(data)
-      } catch {}
+      } catch { }
     }, 3000)
     return () => clearInterval(id)
   }, [session])
 
   const closeSession = async () => {
     if (!session) return
-    try { await client.post(`/api/attendance/session/${session.id}/close`); setSession({ ...session, is_active: false }) } catch{}
+    try { await client.post(`/attendance/session/${session.id}/close`); setSession({ ...session, is_active: false }) } catch { }
   }
 
   return (
@@ -43,11 +43,11 @@ export default function TeacherAttendance(){
       <form onSubmit={createSession} className="bg-white p-4 rounded shadow flex gap-2 items-end">
         <div>
           <label className="block text-sm">Class</label>
-          <input className="border p-2 rounded" value={className} onChange={e=>setClassName(e.target.value)} />
+          <input className="border p-2 rounded" value={className} onChange={e => setClassName(e.target.value)} />
         </div>
         <div>
           <label className="block text-sm">Duration (mins)</label>
-          <input type="number" className="border p-2 rounded w-28" value={duration} onChange={e=>setDuration(e.target.value)} />
+          <input type="number" className="border p-2 rounded w-28" value={duration} onChange={e => setDuration(e.target.value)} />
         </div>
         <button className="bg-blue-600 text-white px-4 py-2 rounded">Start Session</button>
         {error && <span className="text-red-600 text-sm">{error}</span>}
@@ -63,7 +63,7 @@ export default function TeacherAttendance(){
             </div>
             <div className="mt-3 flex gap-2">
               <button onClick={closeSession} className="bg-gray-800 text-white px-3 py-1 rounded" disabled={!session.is_active}>Close Session</button>
-              <span className={`text-sm ${session.is_active? 'text-green-700':'text-gray-500'}`}>{session.is_active? 'Active':'Closed'}</span>
+              <span className={`text-sm ${session.is_active ? 'text-green-700' : 'text-gray-500'}`}>{session.is_active ? 'Active' : 'Closed'}</span>
             </div>
             <div className="mt-2 text-xs text-gray-500">Token: {session.token}</div>
           </div>

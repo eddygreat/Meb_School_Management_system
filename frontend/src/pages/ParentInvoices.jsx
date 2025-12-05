@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import client from '../api/client'
 import { useAuth } from '../context/AuthContext'
 
-export default function ParentInvoices(){
+export default function ParentInvoices() {
   const { user } = useAuth()
   const [invoices, setInvoices] = useState([])
   const [loading, setLoading] = useState(false)
@@ -13,7 +13,7 @@ export default function ParentInvoices(){
     setLoading(true)
     setError('')
     try {
-      const { data } = await client.get(`/api/fees/invoices/${user.student_id}`)
+      const { data } = await client.get(`/fees/invoices/${user.student_id}`)
       setInvoices(data)
     } catch (e) {
       setError('Failed to load invoices')
@@ -24,9 +24,9 @@ export default function ParentInvoices(){
 
   useEffect(() => { fetchInvoices() }, [user])
 
-  const pay = async (invoiceId, provider='paystack') => {
+  const pay = async (invoiceId, provider = 'paystack') => {
     try {
-      const { data } = await client.post('/api/fees/initiate', { invoice_id: invoiceId, provider })
+      const { data } = await client.post('/fees/initiate', { invoice_id: invoiceId, provider })
       window.location.href = data.checkout_url
     } catch (e) {
       alert('Failed to initiate payment')
@@ -35,7 +35,7 @@ export default function ParentInvoices(){
 
   const viewReceipt = async (invoiceId) => {
     try {
-      const { data } = await client.get(`/api/fees/receipt/${invoiceId}`)
+      const { data } = await client.get(`/fees/receipt/${invoiceId}`)
       alert(JSON.stringify(data, null, 2))
     } catch (e) {
       alert('Failed to fetch receipt')
@@ -57,9 +57,9 @@ export default function ParentInvoices(){
               <div className="text-sm text-gray-500">{inv.currency} {inv.amount} • {inv.status}</div>
             </div>
             <div className="flex gap-2">
-              <button className="px-3 py-1 bg-emerald-600 text-white rounded" disabled={inv.status==='paid'} onClick={()=>pay(inv.id,'paystack')}>Pay (Paystack)</button>
-              <button className="px-3 py-1 bg-purple-600 text-white rounded" disabled={inv.status==='paid'} onClick={()=>pay(inv.id,'flutterwave')}>Pay (Flutterwave)</button>
-              <button className="px-3 py-1 bg-gray-800 text-white rounded" onClick={()=>viewReceipt(inv.id)}>Receipt</button>
+              <button className="px-3 py-1 bg-emerald-600 text-white rounded" disabled={inv.status === 'paid'} onClick={() => pay(inv.id, 'paystack')}>Pay (Paystack)</button>
+              <button className="px-3 py-1 bg-purple-600 text-white rounded" disabled={inv.status === 'paid'} onClick={() => pay(inv.id, 'flutterwave')}>Pay (Flutterwave)</button>
+              <button className="px-3 py-1 bg-gray-800 text-white rounded" onClick={() => viewReceipt(inv.id)}>Receipt</button>
             </div>
           </div>
         ))}

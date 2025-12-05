@@ -1,5 +1,8 @@
 # MEB School Management System
 
+# Link to Projects Pitch Deck
+https://www.canva.com/design/DAG580EMfGY/eTk0SH85kiJdpDtewp3GWA/edit?utm_content=DAG580EMfGY&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
+
 ## About The Project
 
 MEB School Management System is a modern, web-based application designed to digitize and simplify the complex operations of educational institutions. It provides a centralized platform for administrators, teachers, students, and parents to manage academic and administrative tasks efficiently.
@@ -20,7 +23,7 @@ This project leverages a modern technology stack for a robust and scalable solut
 *   **React.js:** A JavaScript library for building user interfaces.
 *   **Vite:** A next-generation frontend tooling for fast development.
 *   **Axios:** A promise-based HTTP client for making API requests.
-*   **Deployment:** [Netlify](https://www.netlify.com/)
+*   **Deployment:** [Netlify](https://mebschoolmanagementsystem.netlify.app)
 
 **Backend:**
 *   **Python:** A versatile programming language for the server-side logic.
@@ -29,33 +32,27 @@ This project leverages a modern technology stack for a robust and scalable solut
 *   **Uvicorn:** An ASGI server, for use with FastAPI.
 *   **SQLAlchemy:** A SQL toolkit and Object-Relational Mapper (ORM).
 *   **Deployment:** [Render](https://render.com/)
+*   **AI Integration:** [Google Gemini API](https://ai.google.dev/) (Generative AI & Vision)
 
-## Project Status
+## Key Features
 
-The project is currently in **Frontend-Only Demonstration Mode**.
+### 🤖 Advanced AI Automation
+The application now integrates **Google Gemini 1.5 Flash** to provide cutting-edge AI capabilities:
 
-### Reason for Current Mode
+1.  **AI-Powered Face Recognition**:
+    - Uses **Gemini Vision** to securely verify user identity during login.
+    - Compares live camera input with enrolled photos using multimodal AI analysis, eliminating the need for heavy local libraries.
 
-During deployment of the backend service to the Render free tier, we encountered persistent memory limitations (`Out of Memory` errors) that prevented the Python server from running reliably. To ensure the frontend user experience and application flow can still be fully demonstrated, we have pivoted to a simulated backend approach.
+2.  **Intelligent Auto-Grading**:
+    - **Teachers** can instantly grade assignments by providing the question, student answer, and an optional rubric.
+    - The AI analyzes the answer and provides a **Score (0-10)**, **Detailed Feedback**, and **Improvement Tips**.
 
-This allows for a complete walkthrough of the user interface, role-based access control, and component interactions without being blocked by backend server issues.
+3.  **Personalized Study Guides**:
+    - **Students** can generate custom study plans based on their recent grades and performance.
+    - The AI identifies weak areas and suggests specific topics to focus on.
 
-### How the Simulation Works
-
-*   **User Signup:** The signup form collects user information and displays a "Signup Successful" message upon submission. It does not send data to a backend.
-*   **User Login:** The login form simulates a successful authentication for any provided credentials. Upon login, a mock user session is created and stored in the browser's local storage.
-*   **Role-Based Access:** On visiting the site, a "Role Switcher" component is available. This allows you to dynamically change the user's role between `Admin`, `Student`, `Teacher`, and `Parent` to explore the different views and permissions available to each role. Please note, this is a temporary feature for demonstration purposes. In a production environment, user roles would be assigned by an administrator and would not be user-changeable.
-*   **Simulated API Calls:** Pages like the Admin User Management dashboard simulate asynchronous data fetching, complete with loading spinners and error states, to demonstrate professional data handling practices.
-*   **Feature-Rich UI:** Key features, such as the multi-step "Face Enrollment" process, have a complete and polished user interface to showcase the full vision of the application.
-*   **Interactive Chatbot (`MebBot`):** The student dashboard includes an interactive chatbot to assist students with their assignments. The conversation is simulated with predefined responses to showcase the look, feel, and potential of this feature.
-
-This approach ensures that development and demonstration of the frontend can continue smoothly while the backend deployment issues are addressed separately.
-
-## Getting Started
-
-To get a local copy up and running, follow these simple steps.
-
-### Prerequisites
+4.  **Performance Prediction**:
+    - Analyzes student history (grades, attendance) to predict future performance.
 
 *   Node.js and npm (for the frontend)
     ```sh
@@ -90,6 +87,12 @@ To get a local copy up and running, follow these simple steps.
 4.  Run the server using Gunicorn (replace `app:app` with your actual application entrypoint if different):
     ```sh
     gunicorn --config app/gunicorn_conf.py app:app
+    gunicorn --config app/gunicorn_conf.py app:app
+    ```
+5.  **Configure Environment Variables**:
+    Create a `.env` file in the `backend` directory and add your Gemini API key:
+    ```properties
+    GEMINI_API_KEY=your_api_key_here
     ```
 
 ## Repository

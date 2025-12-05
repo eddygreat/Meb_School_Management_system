@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import client from '../api/client'
 
-export default function AdminInvoices(){
+export default function AdminInvoices() {
   const [studentId, setStudentId] = useState('')
   const [title, setTitle] = useState('Tuition Fee')
   const [amount, setAmount] = useState('100000')
@@ -13,7 +13,7 @@ export default function AdminInvoices(){
   const load = async () => {
     setMessage(''); setError('')
     try {
-      const { data } = await client.get(`/api/fees/invoices/${studentId}`)
+      const { data } = await client.get(`/fees/invoices/${studentId}`)
       setInvoices(data)
     } catch {
       setError('Failed to load')
@@ -24,7 +24,7 @@ export default function AdminInvoices(){
     e.preventDefault()
     setMessage(''); setError('')
     try {
-      const { data } = await client.post('/api/fees/invoices', { student_id: Number(studentId), title, amount: Number(amount), currency })
+      const { data } = await client.post('/fees/invoices', { student_id: Number(studentId), title, amount: Number(amount), currency })
       setMessage(`Created invoice #${data.id}`)
       await load()
     } catch {
@@ -38,19 +38,19 @@ export default function AdminInvoices(){
       <form onSubmit={createInvoice} className="bg-white p-4 rounded shadow flex flex-wrap gap-3 items-end mb-4">
         <div>
           <label className="block text-sm">Student ID</label>
-          <input className="border p-2 rounded w-40" value={studentId} onChange={(e)=>setStudentId(e.target.value)} placeholder="e.g. 1" />
+          <input className="border p-2 rounded w-40" value={studentId} onChange={(e) => setStudentId(e.target.value)} placeholder="e.g. 1" />
         </div>
         <div>
           <label className="block text-sm">Title</label>
-          <input className="border p-2 rounded" value={title} onChange={(e)=>setTitle(e.target.value)} />
+          <input className="border p-2 rounded" value={title} onChange={(e) => setTitle(e.target.value)} />
         </div>
         <div>
           <label className="block text-sm">Amount</label>
-          <input className="border p-2 rounded w-40" value={amount} onChange={(e)=>setAmount(e.target.value)} />
+          <input className="border p-2 rounded w-40" value={amount} onChange={(e) => setAmount(e.target.value)} />
         </div>
         <div>
           <label className="block text-sm">Currency</label>
-          <input className="border p-2 rounded w-28" value={currency} onChange={(e)=>setCurrency(e.target.value)} />
+          <input className="border p-2 rounded w-28" value={currency} onChange={(e) => setCurrency(e.target.value)} />
         </div>
         <button className="bg-blue-600 text-white px-4 py-2 rounded">Create</button>
         <button type="button" onClick={load} className="bg-gray-800 text-white px-4 py-2 rounded">Load Student Invoices</button>

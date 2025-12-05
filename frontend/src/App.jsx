@@ -45,7 +45,7 @@ function ProtectedRoute({ role }) {
     return <Navigate to="/login" />;
   }
 
-  if (role && user.role !== role) { 
+  if (role && user.role !== role) {
     return <Navigate to={`/${user.role}/dashboard`} />;
   }
 
@@ -98,6 +98,9 @@ function AppRoutes() {
         <Route path="/parent/dashboard" element={<ParentDashboard />} />
         <Route path="/parent/invoices" element={<ParentInvoices />} />
         <Route path="/parent/messages" element={<ParentMessages />} />
+
+        {/* Shared Routes - Accessible to all authenticated users */}
+        <Route path="/face-enroll" element={<FaceEnroll />} />
       </Route>
 
       {/* Fallback Route */}
@@ -108,7 +111,7 @@ function AppRoutes() {
 
 export default function App() {
   return (
-    <Router>
+    <Router future={{ v7_relativeSplatPath: true }}>
       <AuthProvider>
         <div className="min-h-screen bg-gray-100">
           <AppRoutes />

@@ -1,40 +1,24 @@
 import React from 'react';
+import apiClient from '@components/api';
 
 /**
  * The ActionProvider defines the actions the chatbot can take.
  */
 const ActionProvider = ({ createChatBotMessage, setState, children }) => {
-  const handleHello = () => {
-    const botMessage = createChatBotMessage('Hello there! How can I assist you today?');
-    addMessageToState(botMessage);
-  };
 
-  const handleExamPrep = () => {
-    const botMessage = createChatBotMessage(
-      "Great! For exam prep, I recommend starting with a study plan, reviewing past papers, and taking short breaks. Don't forget to get enough sleep!"
-    );
-    addMessageToState(botMessage);
-  };
+  const handleAIResponse = async (message) => {
+    try {
+      // Use apiClient to ensure auth token is included
+      const { data } = await apiClient.post('/ai/chat', { message });
 
-  const handleAssignments = () => {
-    const botMessage = createChatBotMessage(
-      "For assignments, make sure to read the instructions carefully. Breaking the task into smaller parts can make it more manageable. What subject are you working on?"
-    );
-    addMessageToState(botMessage);
-  };
+      const botMessage = createChatBotMessage(data.response || "I'm having trouble connecting to my brain right now.");
+      addMessageToState(botMessage);
 
-  const handleStudentResources = () => {
-    const botMessage = createChatBotMessage(
-      'You can find helpful resources at the student portal, including the library, academic advising, and tutoring services. Is there a specific resource you need?'
-    );
-    addMessageToState(botMessage);
-  };
-
-  const handleDefault = () => {
-    const botMessage = createChatBotMessage(
-      "I'm sorry, I don't understand. You can ask me about 'exam prep', 'assignments', or 'student resources'."
-    );
-    addMessageToState(botMessage);
+    } catch (error) {
+      console.error("AI Error:", error);
+      const botMessage = createChatBotMessage("Sorry, I'm having trouble connecting to the server.");
+      addMessageToState(botMessage);
+    }
   };
 
   // Helper function to add a message to the chatbot state
@@ -51,11 +35,7 @@ const ActionProvider = ({ createChatBotMessage, setState, children }) => {
       {React.Children.map(children, (child) => {
         return React.cloneElement(child, {
           actions: {
-            handleHello,
-            handleExamPrep,
-            handleAssignments,
-            handleStudentResources,
-            handleDefault,
+            handleAIResponse,
           },
         });
       })}

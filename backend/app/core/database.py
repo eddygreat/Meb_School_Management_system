@@ -6,6 +6,30 @@ from app.core.config import settings
 # Convert sync psycopg2 URL to asyncpg URL if necessary
 DATABASE_URL_ASYNC = settings.DATABASE_URL.replace("postgresql+psycopg2", "postgresql+asyncpg")
 
+connect_args = {}
+# asyncpg does not support sslmode or channel_binding in the connection string
+if "?" in DATABASE_URL_ASYNC:
+    base_url, query_str = DATABASE_URL_ASYNC.split("?", 1)
+    params = query_str.split("&")
+    
+    # Check if sslmode=require is present
+    ssl_required = any(p.startswith("sslmode=require") for p in params)
+    
+    # Filter out sslmode and channel_binding
+    filtered_params = [p for p in params if not p.startswith("sslmode=") and not p.startswith("channel_binding=")]
+    
+    if filtered_params:
+        DATABASE_URL_ASYNC = f"{base_url}?{'&'.join(filtered_params)}"
+    else:
+        DATABASE_URL_ASYNC = base_url
+
+    if ssl_required:
+        import ssl
+        ctx = ssl.create_default_context()
+        ctx.check_hostname = False
+        ctx.verify_mode = ssl.CERT_NONE
+        connect_args["ssl"] = ctx
+
 # Use NullPool in test/dev runs to avoid reusing connections across event loops.
 # Reusing pooled asyncpg connections created on a different event loop can
 # cause "attached to a different loop" RuntimeErrors during tests which spawn
@@ -17,6 +41,7 @@ engine = create_async_engine(
     future=True,
     echo=False,
     poolclass=NullPool,
+    connect_args=connect_args,
 )
 
 # Use an async session factory. expire_on_commit=False is helpful in async flows
@@ -37,5 +62,11 @@ async def get_session() -> AsyncSession:
 
     Usage in routes: `db: AsyncSession = Depends(get_session)`
     """
-    async with AsyncSessionLocal() as session:
-        yield session
+    try:
+        async with AsyncSessionLocal() as session:
+            yield session
+    except Exception as e:
+        print(f"CRITICAL ERROR in get_session: {e}")
+        import traceback
+        traceback.print_exc()
+        raise e

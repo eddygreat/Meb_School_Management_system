@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.deps import get_db
 from app.core.security import create_access_token
 from app.models.user import User
-from app.schemas.auth import Token, LoginRequest, RegisterAdmin
+from app.schemas.auth import Token, LoginRequest, RegisterAdmin, UserCreate
 from app.schemas.user import UserOut
 from app.core.security import get_password_hash
 
@@ -22,6 +22,32 @@ async def register_admin(payload: RegisterAdmin, db: AsyncSession = Depends(get_
     await db.commit()
     await db.refresh(user)
     return {"id": user.id, "email": user.email, "full_name": user.full_name, "role": user.role}
+
+@router.post("/register", response_model=UserOut)
+async def register(payload: UserCreate, db: AsyncSession = Depends(get_db)):
+    print(f"DEBUG: Registering user {payload.email}")
+    try:
+        existing = await User.get_by_email(db, payload.email)
+        print(f"DEBUG: Checked existing user: {existing}")
+        if existing:
+            raise HTTPException(status_code=409, detail="User with this email already exists.")
+
+        hashed_password = get_password_hash(payload.password)
+        print("DEBUG: Password hashed")
+        user = User(email=payload.email, full_name=payload.full_name, role=payload.role, hashed_password=hashed_password)
+        print("DEBUG: User object created")
+        db.add(user)
+        print("DEBUG: User added to session")
+        await db.commit()
+        print("DEBUG: Session committed")
+        await db.refresh(user)
+        print(f"DEBUG: User refreshed: {user.id}")
+        return {"id": user.id, "email": user.email, "full_name": user.full_name, "role": user.role}
+    except Exception as e:
+        print(f"CRITICAL ERROR in register: {e}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/login", response_model=Token)
 async def login(payload: LoginRequest, db: AsyncSession = Depends(get_db)):

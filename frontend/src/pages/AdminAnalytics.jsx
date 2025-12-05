@@ -2,13 +2,13 @@ import { useEffect, useState } from 'react'
 import client from '../api/client'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts'
 
-export default function AdminAnalytics(){
+export default function AdminAnalytics() {
   const [data, setData] = useState(null)
   const [error, setError] = useState('')
 
   useEffect(() => {
     (async () => {
-      try { const { data } = await client.get('/api/analytics/dashboard'); setData(data) } catch { setError('Failed to load analytics') }
+      try { const { data } = await client.get('/analytics/dashboard'); setData(data) } catch { setError('Failed to load analytics') }
     })()
   }, [])
 

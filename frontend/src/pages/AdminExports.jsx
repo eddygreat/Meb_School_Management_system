@@ -1,22 +1,22 @@
 import { useState } from 'react'
 import client from '../api/client'
 
-export default function AdminExports(){
+export default function AdminExports() {
   const [status, setStatus] = useState('')
   const [error, setError] = useState('')
   const [exportLinks, setExportLinks] = useState(null)
 
   const getExport = async () => {
     setStatus(''); setError('')
-    try { const { data } = await client.get('/api/admin/export'); setExportLinks(data) } catch { setError('Failed to export') }
+    try { const { data } = await client.get('/admin/export'); setExportLinks(data) } catch { setError('Failed to export') }
   }
   const backup = async () => {
     setStatus(''); setError('')
-    try { await client.post('/api/admin/backup'); setStatus('Backup started (stub)') } catch { setError('Backup failed') }
+    try { await client.post('/admin/backup'); setStatus('Backup started (stub)') } catch { setError('Backup failed') }
   }
   const restore = async () => {
     setStatus(''); setError('')
-    try { await client.post('/api/admin/restore'); setStatus('Restore started (stub)') } catch { setError('Restore failed') }
+    try { await client.post('/admin/restore'); setStatus('Restore started (stub)') } catch { setError('Restore failed') }
   }
 
   return (

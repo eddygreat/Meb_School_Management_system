@@ -1,14 +1,10 @@
 from fastapi import APIRouter
-
-from app.routers import (
-    admin, analytics, attendance, auth, biometric, comms, curriculum, discipline,
-    fees, grades, hr, security, settings_router, students, teachers, timetable
-)
+from . import auth, students, teachers, grades, fees, comms, analytics, admin, attendance, biometric, timetable, curriculum, hr, security, discipline, ai
+from . import settings as settings_router
 
 api_router = APIRouter()
 
 api_router.include_router(admin.router, prefix="/admin", tags=["admin"])
-api_router.include_router(analytics.router, prefix="/analytics", tags=["analytics"])
 api_router.include_router(attendance.router, prefix="/attendance", tags=["attendance"])
 api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
 api_router.include_router(biometric.router, prefix="/biometric", tags=["biometric"])
@@ -23,6 +19,7 @@ api_router.include_router(settings_router.router, prefix="/settings", tags=["set
 api_router.include_router(students.router, prefix="/students", tags=["students"])
 api_router.include_router(teachers.router, prefix="/teachers", tags=["teachers"])
 api_router.include_router(timetable.router, prefix="/timetable", tags=["timetable"])
+api_router.include_router(ai.router, prefix="/ai", tags=["ai"])
 
 @api_router.get("/health")
 async def health():

@@ -2,17 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { PencilIcon, TrashIcon, UserPlusIcon } from '@heroicons/react/24/outline';
 import EmptyState from '../EmptyState';
 import LoadingSpinner from '../LoadingSpinner';
-import apiClient from '../components/api';
-
-// Mock data that our simulated API will return
-const mockUsers = [
-  { id: 1, name: 'John Doe', email: 'john.doe@example.com', role: 'Student', status: 'Active' },
-  { id: 2, name: 'Jane Smith', email: 'jane.smith@example.com', role: 'Teacher', status: 'Active' },
-  { id: 3, name: 'Peter Jones', email: 'peter.jones@example.com', role: 'Student', status: 'Inactive' },
-  { id: 4, name: 'Mary Williams', email: 'mary.w@example.com', role: 'Parent', status: 'Active' },
-  { id: 5, name: 'David Brown', email: 'david.b@example.com', role: 'Admin', status: 'Active' },
-  { id: 6, name: 'Emily Davis', email: 'emily.d@example.com', role: 'Teacher', status: 'Active' },
-];
+import api from '../services/api';
 
 const getStatusColor = (status) => {
   return status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
@@ -29,18 +19,10 @@ const AdminUsers = () => {
       setLoading(true);
       setError(null);
       try {
-        // In a real app, this would be: const response = await apiClient.get('/users');
-        // Here, we simulate the API call with a delay.
-        await new Promise(resolve => setTimeout(resolve, 1000));
-
-        // Simulate a potential error
-        // if (Math.random() > 0.8) {
-        //   throw new Error('Failed to fetch users. Please try again.');
-        // }
-
-        setUsers(mockUsers);
+        const { data } = await api.users.getAll();
+        setUsers(data);
       } catch (err) {
-        setError(err.message);
+        setError(err.message || 'Failed to fetch users');
       } finally {
         setLoading(false);
       }
@@ -49,8 +31,8 @@ const AdminUsers = () => {
     fetchUsers();
   }, []);
 
-  const filteredUsers = useMemo(() => 
-    users.filter(user => 
+  const filteredUsers = useMemo(() =>
+    users.filter(user =>
       user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.role.toLowerCase().includes(searchTerm.toLowerCase())
@@ -133,7 +115,7 @@ const renderTable = (filteredUsers) => (
 );
 
 const renderEmptyState = () => (
-  <EmptyState 
+  <EmptyState
     title="No Users Found"
     message="Your search did not match any users. Try a different query."
   />

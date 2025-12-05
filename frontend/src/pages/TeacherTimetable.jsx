@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import client from '../api/client'
 import { useAuth } from '../context/AuthContext'
 
-export default function TeacherTimetable(){
+export default function TeacherTimetable() {
   const { user } = useAuth()
   const [entries, setEntries] = useState([])
   const [master, setMaster] = useState({ subjects: [], rooms: [], timeslots: [], classes: [] })
@@ -13,11 +13,11 @@ export default function TeacherTimetable(){
     setError('')
     try {
       const [scheduleRes, subjectsRes, roomsRes, timeslotsRes, classesRes] = await Promise.all([
-        client.get(`/api/timetable/schedule/by-teacher/${user.teacher_id}`),
-        client.get('/api/timetable/subjects'),
-        client.get('/api/timetable/rooms'),
-        client.get('/api/timetable/timeslots'),
-        client.get('/api/timetable/classes')
+        client.get(`/timetable/schedule/by-teacher/${user.teacher_id}`),
+        client.get('/timetable/subjects'),
+        client.get('/timetable/rooms'),
+        client.get('/timetable/timeslots'),
+        client.get('/timetable/classes')
       ]);
       setEntries(scheduleRes.data);
       setMaster({

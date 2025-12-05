@@ -4,7 +4,7 @@ import path from 'path';
 
 export default defineConfig(({ command, mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
-  
+
   // Base configuration
   const config = {
     plugins: [react()],
@@ -17,9 +17,9 @@ export default defineConfig(({ command, mode }) => {
           // Forward API requests to your Render backend
           // This URL is now read from a non-VITE prefixed env variable
           // to avoid being exposed in the frontend build.
-          target: env.BACKEND_URL,
+          target: env.BACKEND_URL || 'http://localhost:8000',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api/, ''),
+          changeOrigin: true,
         }
       }
     },

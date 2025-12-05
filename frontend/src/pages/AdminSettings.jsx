@@ -1,29 +1,29 @@
 import { useEffect, useState } from 'react'
 import client from '../api/client'
 
-export default function AdminSettings(){
+export default function AdminSettings() {
   const [items, setItems] = useState([])
-  const [keyVal, setKeyVal] = useState({ key:'', value:'' })
+  const [keyVal, setKeyVal] = useState({ key: '', value: '' })
   const [status, setStatus] = useState('')
   const [error, setError] = useState('')
 
   const load = async () => {
     setError(''); setStatus('')
-    try { const { data } = await client.get('/api/settings/'); setItems(data) } catch { setError('Failed to load settings') }
+    try { const { data } = await client.get('/settings/'); setItems(data) } catch { setError('Failed to load settings') }
   }
-  useEffect(()=>{ load() }, [])
+  useEffect(() => { load() }, [])
 
   const save = async () => {
     if (!keyVal.key) return
-    try { await client.post('/api/settings/', null, { params: { key: keyVal.key, value: keyVal.value } }); setStatus('Saved'); setKeyVal({ key:'', value:'' }); load() } catch { setError('Failed to save') }
+    try { await client.post('/settings/', null, { params: { key: keyVal.key, value: keyVal.value } }); setStatus('Saved'); setKeyVal({ key: '', value: '' }); load() } catch { setError('Failed to save') }
   }
 
   return (
     <div className="p-6 space-y-4">
       <h1 className="text-2xl font-bold">Admin Settings</h1>
       <div className="bg-white p-4 rounded shadow grid md:grid-cols-3 gap-2 items-end">
-        <input className="border p-2 rounded" placeholder="Key (e.g. SCHOOL_NAME)" value={keyVal.key} onChange={e=>setKeyVal(s=>({...s,key:e.target.value}))} />
-        <input className="border p-2 rounded" placeholder="Value" value={keyVal.value} onChange={e=>setKeyVal(s=>({...s,value:e.target.value}))} />
+        <input className="border p-2 rounded" placeholder="Key (e.g. SCHOOL_NAME)" value={keyVal.key} onChange={e => setKeyVal(s => ({ ...s, key: e.target.value }))} />
+        <input className="border p-2 rounded" placeholder="Value" value={keyVal.value} onChange={e => setKeyVal(s => ({ ...s, value: e.target.value }))} />
         <button onClick={save} className="bg-emerald-600 text-white px-4 py-2 rounded">Save</button>
         {status && <div className="text-green-700 text-sm">{status}</div>}
         {error && <div className="text-red-600 text-sm">{error}</div>}

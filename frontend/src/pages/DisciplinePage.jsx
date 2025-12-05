@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react'
 import client from '../api/client'
 
-export default function DisciplinePage({ canResolve = false, canCreate = true, title = "Discipline Incidents" }){
+export default function DisciplinePage({ canResolve = false, canCreate = true, title = "Discipline Incidents" }) {
   const [studentId, setStudentId] = useState('')
   const [items, setItems] = useState([])
-  const [form, setForm] = useState({ student_id:'', category:'', description:'' })
+  const [form, setForm] = useState({ student_id: '', category: '', description: '' })
   const [status, setStatus] = useState('')
   const [error, setError] = useState('')
 
   const load = async () => {
     setError(''); setStatus('')
     try {
-      const { data } = await client.get('/api/discipline/incidents', { params: { student_id: studentId || undefined } })
+      const { data } = await client.get('/discipline/incidents', { params: { student_id: studentId || undefined } })
       setItems(data)
     } catch {
       setError('Failed to load incidents')
@@ -22,8 +22,8 @@ export default function DisciplinePage({ canResolve = false, canCreate = true, t
     setError(''); setStatus('')
     if (!form.student_id || !form.category || !form.description) { setError('All fields required'); return }
     try {
-      await client.post('/api/discipline/incidents', { student_id: Number(form.student_id), category: form.category, description: form.description })
-      setForm({ student_id:'', category:'', description:'' })
+      await client.post('/discipline/incidents', { student_id: Number(form.student_id), category: form.category, description: form.description })
+      setForm({ student_id: '', category: '', description: '' })
       setStatus('Created')
       await load()
     } catch {
@@ -32,7 +32,7 @@ export default function DisciplinePage({ canResolve = false, canCreate = true, t
   }
 
   const resolve = async (id) => {
-    try { await client.post(`/api/discipline/incidents/${id}/status`, { status: 'resolved' }); await load() } catch {}
+    try { await client.post(`/discipline/incidents/${id}/status`, { status: 'resolved' }); await load() } catch { }
   }
 
   useEffect(() => { load() }, [])
@@ -41,7 +41,7 @@ export default function DisciplinePage({ canResolve = false, canCreate = true, t
     <div className="p-6 space-y-4">
       <h1 className="text-2xl font-bold">{title}</h1>
       <div className="bg-white p-4 rounded shadow grid md:grid-cols-5 gap-2 items-end">
-        <input className="border p-2 rounded" placeholder="Filter by Student ID" value={studentId} onChange={e=>setStudentId(e.target.value)} />
+        <input className="border p-2 rounded" placeholder="Filter by Student ID" value={studentId} onChange={e => setStudentId(e.target.value)} />
         <button onClick={load} className="bg-blue-600 text-white px-4 py-2 rounded">Load</button>
         {status && <div className="text-green-700 text-sm">{status}</div>}
         {error && <div className="text-red-600 text-sm">{error}</div>}
@@ -49,9 +49,9 @@ export default function DisciplinePage({ canResolve = false, canCreate = true, t
 
       {canCreate && (
         <div className="bg-white p-4 rounded shadow grid md:grid-cols-4 gap-2 items-end">
-          <input className="border p-2 rounded" placeholder="Student ID" value={form.student_id} onChange={e=>setForm(s=>({...s, student_id:e.target.value}))} />
-          <input className="border p-2 rounded" placeholder="Category" value={form.category} onChange={e=>setForm(s=>({...s, category:e.target.value}))} />
-          <input className="border p-2 rounded" placeholder="Description" value={form.description} onChange={e=>setForm(s=>({...s, description:e.target.value}))} />
+          <input className="border p-2 rounded" placeholder="Student ID" value={form.student_id} onChange={e => setForm(s => ({ ...s, student_id: e.target.value }))} />
+          <input className="border p-2 rounded" placeholder="Category" value={form.category} onChange={e => setForm(s => ({ ...s, category: e.target.value }))} />
+          <input className="border p-2 rounded" placeholder="Description" value={form.description} onChange={e => setForm(s => ({ ...s, description: e.target.value }))} />
           <button onClick={create} className="bg-emerald-600 text-white px-4 py-2 rounded">Create</button>
         </div>
       )}
@@ -69,7 +69,7 @@ export default function DisciplinePage({ canResolve = false, canCreate = true, t
                 <td className="p-2">{i.id}</td><td className="p-2">{i.student_id}</td><td className="p-2">{i.category}</td><td className="p-2">{i.status}</td>
                 <td className="p-2">
                   {canResolve && i.status !== 'resolved' && (
-                    <button className="text-blue-700" onClick={()=>resolve(i.id)}>Resolve</button>
+                    <button className="text-blue-700" onClick={() => resolve(i.id)}>Resolve</button>
                   )}
                 </td>
               </tr>

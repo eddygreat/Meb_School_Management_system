@@ -3,7 +3,7 @@ import client from '../api/client'
 import { Scanner as QrScanner } from '@yudiel/react-qr-scanner'
 import { useAuth } from '../context/AuthContext'
 
-export default function StudentCheckin(){
+export default function StudentCheckin() {
   const [token, setToken] = useState('')
   const { user } = useAuth()
   const [status, setStatus] = useState('')
@@ -15,7 +15,7 @@ export default function StudentCheckin(){
     setStatus('')
     setError('')
     try {
-      const { data } = await client.post('/api/attendance/checkin/qr', { token, student_id: Number(user.student_id) })
+      const { data } = await client.post('/attendance/checkin/qr', { token, student_id: Number(user.student_id) })
       setStatus(`Checked in: record #${data.id}`)
     } catch (e) {
       setError(e?.response?.data?.detail || 'Check-in failed')
@@ -37,19 +37,19 @@ export default function StudentCheckin(){
           {scanning ? (
             <QrScanner
               onDecode={onDecode}
-              onError={() => {}}
+              onError={() => { }}
               constraints={{ facingMode: 'environment' }}
               containerStyle={{ width: '100%' }}
             />
           ) : (
             <div className="text-sm text-gray-600">QR captured. Token filled below.</div>
           )}
-          <button className="mt-2 text-blue-600 text-sm" onClick={()=>setScanning(true)}>Rescan</button>
+          <button className="mt-2 text-blue-600 text-sm" onClick={() => setScanning(true)}>Rescan</button>
         </div>
         <form onSubmit={submit} className="bg-white p-4 rounded shadow space-y-3 w-full">
           <div>
             <label className="block text-sm">Token</label>
-            <input className="border p-2 rounded w-full" value={token} onChange={(e)=>setToken(e.target.value)} placeholder="Token from QR" />
+            <input className="border p-2 rounded w-full" value={token} onChange={(e) => setToken(e.target.value)} placeholder="Token from QR" />
           </div>
           <button className="bg-blue-600 text-white px-4 py-2 rounded">Check In</button>
           {status && <div className="text-green-700 text-sm">{status}</div>}
