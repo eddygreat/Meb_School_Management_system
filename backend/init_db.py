@@ -57,6 +57,20 @@ def init_db():
             print("⚠️ 'users' table NOT found! Database might be out of sync.")
             print("Running force reset (stamp base -> upgrade head)...")
             
+            # DROP EXISTING TYPES to prevent "already exists" error during migration
+            # This handles cases where a previous partial run created the type but not the table
+            try:
+                conn_clean = psycopg2.connect(db_url)
+                conn_clean.autocommit = True
+                cur_clean = conn_clean.cursor()
+                print("Cleaning up potential leftover types...")
+                cur_clean.execute("DROP TYPE IF EXISTS userrole CASCADE;")
+                print("✅ Dropped type 'userrole' (if it existed).")
+                cur_clean.close()
+                conn_clean.close()
+            except Exception as e:
+                print(f"⚠️ Warning during type cleanup: {e}")
+
             # Stamp base
             print("Running: alembic stamp base")
             res_stamp = subprocess.run("alembic stamp base", shell=True, capture_output=True, text=True, cwd=project_root)
