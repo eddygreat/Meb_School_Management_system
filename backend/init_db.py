@@ -17,6 +17,10 @@ def init_db():
     if "+psycopg2" in db_url:
         db_url = db_url.replace("+psycopg2", "")
 
+    # Determine project root (where init_db.py and alembic.ini are located)
+    project_root = os.path.dirname(os.path.abspath(__file__))
+    print(f"DEBUG: init_db running from calculated root: {project_root}")
+
     try:
         conn = psycopg2.connect(db_url)
         cur = conn.cursor()
@@ -42,7 +46,7 @@ def init_db():
         if exists:
             print("✅ 'users' table found. Standard migration verification...")
             # Run upgrade head with capture
-            result = subprocess.run("alembic upgrade head", shell=True, capture_output=True, text=True)
+            result = subprocess.run("alembic upgrade head", shell=True, capture_output=True, text=True, cwd=project_root)
             print("--- Alembic Upgrade Output ---")
             print(result.stdout)
             print(result.stderr)
@@ -55,7 +59,7 @@ def init_db():
             
             # Stamp base
             print("Running: alembic stamp base")
-            res_stamp = subprocess.run("alembic stamp base", shell=True, capture_output=True, text=True)
+            res_stamp = subprocess.run("alembic stamp base", shell=True, capture_output=True, text=True, cwd=project_root)
             print(res_stamp.stdout)
             print(res_stamp.stderr)
             if res_stamp.returncode != 0:
@@ -63,7 +67,7 @@ def init_db():
 
             # Upgrade head
             print("Running: alembic upgrade head")
-            res_up = subprocess.run("alembic upgrade head", shell=True, capture_output=True, text=True)
+            res_up = subprocess.run("alembic upgrade head", shell=True, capture_output=True, text=True, cwd=project_root)
             print(res_up.stdout)
             print(res_up.stderr)
             if res_up.returncode != 0:
