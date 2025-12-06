@@ -52,22 +52,22 @@ async def startup_db_check():
             result = await session.execute(text("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'"))
             tables = result.scalars().all()
             print(f"Tables found: {tables}")
-            if "users" in tables:
-                print("✅ 'users' table exists.")
-            else:
-                print("❌ 'users' table MISSING! Running auto-initialization...")
-                try:
-                    # Append backend root to path to import init_db
-                    import sys
-                    import os
-                    # Assuming we are in /app/app (package), and init_db is in /app (root)
-                    # or cwd is /app. 
-                    sys.path.append(os.getcwd()) 
-                    from init_db import init_db
-                    init_db()
-                    print("✅ Auto-initialization completed.")
-                except Exception as e:
-                    print(f"❌ Auto-initialization failed: {e}")
+            print(f"Tables found: {tables}")
+            
+            # Always run init_db to ensure migrations are applied (e.g. adding new cols)
+            print("🔄 Running database initialization/migration check...")
+            try:
+                # Append backend root to path to import init_db
+                import sys
+                import os
+                sys.path.append(os.getcwd()) 
+                from init_db import init_db
+                init_db()
+                print("✅ Database initialization/migration completed.")
+            except Exception as e:
+                print(f"❌ Database initialization failed: {e}")
+                # We log but might not want to kill the app if it's just a check
+                
             break # Just need one session
     except Exception as e:
         print(f"❌ DB Check Failed: {e}")
