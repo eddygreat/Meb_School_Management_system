@@ -19,7 +19,12 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    op.add_column('users', sa.Column('is_active', sa.Boolean(), server_default='true', nullable=False))
+    # Check if column exists to avoid DuplicateColumn error (idempotency)
+    bind = op.get_bind()
+    inspector = sa.inspect(bind)
+    columns = [c['name'] for c in inspector.get_columns('users')]
+    if 'is_active' not in columns:
+        op.add_column('users', sa.Column('is_active', sa.Boolean(), server_default='true', nullable=False))
 
 
 def downgrade() -> None:
