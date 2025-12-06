@@ -41,8 +41,21 @@ def init_db():
             
             # Force Alembic to think it's at base, then upgrade
             subprocess.run("alembic stamp base", shell=True, check=True)
-            subprocess.run("alembic upgrade head", shell=True, check=True)
             print("✅ Force initialization complete. Tables should be created.")
+
+        # Final Verification
+        cur = conn.cursor()
+        cur.execute("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'")
+        final_tables = [r[0] for r in cur.fetchall()]
+        print(f"🔎 Final check from init_db: {final_tables}")
+        if 'users' not in final_tables:
+            print("🚨 CRITICAL: 'users' table STILL MISSING after upgrade!")
+            sys.exit(1)
+        else:
+            print("✅ 'users' table confirmed present.")
+        
+        cur.close()
+        conn.close()
 
     except Exception as e:
         print(f"❌ Error during manual DB check/init: {e}")
