@@ -1,12 +1,12 @@
 import os
-import requests
+import httpx
 import base64
 import json
 from app.core.config import settings
 
 GEMINI_API_KEY = settings.GEMINI_API_KEY
 
-def get_ai_response(prompt: str, image_parts: list = None) -> str:
+async def get_ai_response(prompt: str, image_parts: list = None) -> str:
     """
     Generates a response from the Gemini model based on the provided prompt and optional images.
     """
@@ -40,7 +40,8 @@ def get_ai_response(prompt: str, image_parts: list = None) -> str:
     }
     
     try:
-        response = requests.post(url, json=payload, headers={"Content-Type": "application/json"}, timeout=30)
+        async with httpx.AsyncClient() as client:
+            response = await client.post(url, json=payload, headers={"Content-Type": "application/json"}, timeout=30)
         if response.status_code != 200:
             return f"Error: API request failed with status {response.status_code}: {response.text}"
             
@@ -54,7 +55,7 @@ def get_ai_response(prompt: str, image_parts: list = None) -> str:
     except Exception as e:
         return f"Error generating response: {str(e)}"
 
-def generate_lesson_plan(topic: str, grade_level: str, subject: str) -> str:
+async def generate_lesson_plan(topic: str, grade_level: str, subject: str) -> str:
     """
     Generates a structured lesson plan.
     """
@@ -69,9 +70,9 @@ def generate_lesson_plan(topic: str, grade_level: str, subject: str) -> str:
     5. **Assessment/Quiz (5 questions with answers)**
     6. **Conclusion**
     """
-    return get_ai_response(prompt)
+    return await get_ai_response(prompt)
 
-def chat_with_student(message: str, context: str = "") -> str:
+async def chat_with_student(message: str, context: str = "") -> str:
     """
     Responds to a student's query acting as a helpful school assistant.
     """
@@ -82,9 +83,9 @@ def chat_with_student(message: str, context: str = "") -> str:
     """
     
     full_prompt = f"{system_prompt}\n\nContext: {context}\n\nStudent: {message}\nMebBot:"
-    return get_ai_response(full_prompt)
+    return await get_ai_response(full_prompt)
 
-def verify_face(enrolled_img_data: bytes, login_img_data: bytes) -> bool:
+async def verify_face(enrolled_img_data: bytes, login_img_data: bytes) -> bool:
     """
     Verifies if the person in the login image matches the enrolled image using Gemini Vision.
     """
@@ -107,10 +108,10 @@ def verify_face(enrolled_img_data: bytes, login_img_data: bytes) -> bool:
         {"mime_type": "image/jpeg", "data": login_img_data}
     ]
     
-    response = get_ai_response(prompt, image_parts)
+    response = await get_ai_response(prompt, image_parts)
     return "MATCH" in response.strip().upper()
 
-def grade_assignment(question: str, answer: str, rubric: str = "") -> str:
+async def grade_assignment(question: str, answer: str, rubric: str = "") -> str:
     """
     Grades a student's answer based on the question and optional rubric.
     """
@@ -128,9 +129,9 @@ def grade_assignment(question: str, answer: str, rubric: str = "") -> str:
     
     Format as JSON: {{ "score": 8, "feedback": "...", "tip": "..." }}
     """
-    return get_ai_response(prompt)
+    return await get_ai_response(prompt)
 
-def generate_study_guide(student_data: str) -> str:
+async def generate_study_guide(student_data: str) -> str:
     """
     Generates a personalized study guide based on student performance data.
     """
@@ -140,9 +141,9 @@ def generate_study_guide(student_data: str) -> str:
     
     Identify weak areas and suggest specific topics to review, along with 3 practice questions for the weakest subject.
     """
-    return get_ai_response(prompt)
+    return await get_ai_response(prompt)
 
-def predict_performance(student_history: str) -> str:
+async def predict_performance(student_history: str) -> str:
     """
     Predicts future performance based on historical data.
     """
@@ -154,4 +155,4 @@ def predict_performance(student_history: str) -> str:
     Identify any "At Risk" signs (e.g., declining grades, low attendance).
     Provide a "Success Probability" score (Low/Medium/High).
     """
-    return get_ai_response(prompt)
+    return await get_ai_response(prompt)
