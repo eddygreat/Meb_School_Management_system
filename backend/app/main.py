@@ -55,7 +55,19 @@ async def startup_db_check():
             if "users" in tables:
                 print("✅ 'users' table exists.")
             else:
-                print("❌ 'users' table MISSING!")
+                print("❌ 'users' table MISSING! Running auto-initialization...")
+                try:
+                    # Append backend root to path to import init_db
+                    import sys
+                    import os
+                    # Assuming we are in /app/app (package), and init_db is in /app (root)
+                    # or cwd is /app. 
+                    sys.path.append(os.getcwd()) 
+                    from init_db import init_db
+                    init_db()
+                    print("✅ Auto-initialization completed.")
+                except Exception as e:
+                    print(f"❌ Auto-initialization failed: {e}")
             break # Just need one session
     except Exception as e:
         print(f"❌ DB Check Failed: {e}")
