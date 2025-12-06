@@ -19,6 +19,8 @@ db_url = os.getenv('DATABASE_URL', None)
 if db_url:
     # sync driver required for Alembic offline/online contexts
     db_url = db_url.replace('postgresql+asyncpg', 'postgresql+psycopg2')
+    safe_url = db_url.split("@")[-1] if "@" in db_url else "UNKNOWN"
+    print(f"Alembic using DB URL ending in: ...@{safe_url}")
     config.set_main_option('sqlalchemy.url', db_url)
 
 # Interpret the config file for Python logging.

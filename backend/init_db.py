@@ -38,16 +38,45 @@ def init_db():
 
         if exists:
             print("✅ 'users' table found. Standard migration verification...")
-            # Just run upgrade head to be safe, standard flow
-            subprocess.run("alembic upgrade head", shell=True, check=True)
+            # Run upgrade head with capture
+            try:
+                result = subprocess.run("alembic upgrade head", shell=True, capture_output=True, text=True)
+                print("--- Alembic Upgrade Output ---")
+                print(result.stdout)
+                print(result.stderr)
+                if result.returncode != 0:
+                    print(f"❌ Alembic upgrade failed with code {result.returncode}")
+                    sys.exit(1)
+            except Exception as e:
+                print(f"❌ Failed to run alembic upgrade: {e}")
+                sys.exit(1)
         else:
             print("⚠️ 'users' table NOT found! Database might be out of sync.")
             print("Running force reset (stamp base -> upgrade head)...")
             
-            # Force Alembic to think it's at base, then upgrade
-            subprocess.run("alembic stamp base", shell=True, check=True)
-            subprocess.run("alembic upgrade head", shell=True, check=True)
-            print("✅ Force initialization complete. Tables should be created.")
+            try:
+                # Stamp base
+                print("Running: alembic stamp base")
+                res_stamp = subprocess.run("alembic stamp base", shell=True, capture_output=True, text=True)
+                print(res_stamp.stdout)
+                print(res_stamp.stderr)
+                if res_stamp.returncode != 0:
+                     print(f"❌ Alembic stamp failed: {res_stamp.stderr}")
+                     sys.exit(1)
+
+                # Upgrade head
+                print("Running: alembic upgrade head")
+                res_up = subprocess.run("alembic upgrade head", shell=True, capture_output=True, text=True)
+                print(res_up.stdout)
+                print(res_up.stderr)
+                if res_up.returncode != 0:
+                     print(f"❌ Alembic upgrade failed: {res_up.stderr}")
+                     sys.exit(1)
+                     
+                print("✅ Force initialization complete. Tables should be created.")
+            except Exception as e:
+                print(f"❌ Failed to run alembic commands: {e}")
+                sys.exit(1)
 
         # Final Verification
         cur = conn.cursor()
