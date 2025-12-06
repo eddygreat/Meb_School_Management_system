@@ -36,3 +36,22 @@ app.include_router(api_router, prefix=settings.API_PREFIX)
 @app.get("/")
 async def root():
     return {"message": "Welcome to the School Management System API"}
+
+@app.on_event("startup")
+async def startup_db_check():
+    from sqlalchemy import text
+    from app.core.database import get_session
+    print("--- STARTUP DB CHECK ---")
+    try:
+        async for session in get_session():
+            result = await session.execute(text("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'"))
+            tables = result.scalars().all()
+            print(f"Tables found: {tables}")
+            if "users" in tables:
+                print("✅ 'users' table exists.")
+            else:
+                print("❌ 'users' table MISSING!")
+            break # Just need one session
+    except Exception as e:
+        print(f"❌ DB Check Failed: {e}")
+    print("------------------------")
