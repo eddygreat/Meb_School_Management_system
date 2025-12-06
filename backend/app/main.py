@@ -44,6 +44,11 @@ async def startup_db_check():
     print("--- STARTUP DB CHECK ---")
     try:
         async for session in get_session():
+            # Check connection info
+            result = await session.execute(text("SELECT current_database(), current_user, inet_server_addr()"))
+            db_info = result.one()
+            print(f"🔌 App connected to: DB={db_info[0]}, User={db_info[1]}, IP={db_info[2]}")
+            
             result = await session.execute(text("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'"))
             tables = result.scalars().all()
             print(f"Tables found: {tables}")

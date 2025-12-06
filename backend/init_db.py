@@ -18,6 +18,11 @@ def init_db():
         conn = psycopg2.connect(db_url)
         cur = conn.cursor()
         
+        # Check connection info
+        cur.execute("SELECT current_database(), current_user, inet_server_addr()")
+        db_info = cur.fetchone()
+        print(f"🔌 init_db connected to: DB={db_info[0]}, User={db_info[1]}, IP={db_info[2]}")
+
         # Check if users table exists
         cur.execute("""
             SELECT EXISTS (
@@ -41,6 +46,7 @@ def init_db():
             
             # Force Alembic to think it's at base, then upgrade
             subprocess.run("alembic stamp base", shell=True, check=True)
+            subprocess.run("alembic upgrade head", shell=True, check=True)
             print("✅ Force initialization complete. Tables should be created.")
 
         # Final Verification
