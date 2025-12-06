@@ -3,7 +3,9 @@ import api from '../services/api'; // Import the service layer which has .ai met
 import { useAuth } from '../context/AuthContext';
 import Input from './Input';
 // Map the service layer api to apiClient for compatibility with existing code in this file
-const apiClient = api;
+// Map the service layer api to apiClient for compatibility with existing code in this file
+// const apiClient = api; // REMOVED: We will use api.curriculum directly
+
 export default function TeacherCurriculum() {
   const { user } = useAuth()
   const [subjectId, setSubjectId] = useState('')
@@ -22,22 +24,22 @@ export default function TeacherCurriculum() {
 
   const load = async () => {
     if (user?.teacher_id) {
-      const { data } = await apiClient.get('/curriculum/lesson-plans', { params: { teacher_id: user.teacher_id } })
+      const { data } = await api.curriculum.getLessonPlans({ teacher_id: user.teacher_id })
       setLessonPlans(data)
     }
     if (subjectId) {
-      const { data } = await apiClient.get('/curriculum/resources', { params: { subject_id: subjectId } })
+      const { data } = await api.curriculum.getResources({ subject_id: subjectId })
       setResources(data)
     }
     if (classId) {
-      const { data } = await apiClient.get('/curriculum/assignments', { params: { class_id: classId } })
+      const { data } = await api.curriculum.getAssignments({ class_id: classId })
       setAssignments(data)
     }
   }
 
   const createLessonPlan = async () => {
     if (!user?.teacher_id || !subjectId || !lpForm.title) return
-    await apiClient.post('/curriculum/lesson-plans', { teacher_id: Number(user.teacher_id), subject_id: Number(subjectId), ...lpForm, week_no: Number(lpForm.week_no) })
+    await api.curriculum.createLessonPlan({ teacher_id: Number(user.teacher_id), subject_id: Number(subjectId), ...lpForm, week_no: Number(lpForm.week_no) })
     setLpForm({ title: '', content: '', week_no: 1 })
     await load()
   }
@@ -46,7 +48,7 @@ export default function TeacherCurriculum() {
     if (!lpForm.title) return alert("Please enter a title first");
     setIsGenerating(true);
     try {
-      const { data } = await apiClient.ai.generateLessonPlan({
+      const { data } = await api.ai.generateLessonPlan({
         topic: lpForm.title,
         grade_level: "High School",
         subject: "General"
@@ -62,26 +64,26 @@ export default function TeacherCurriculum() {
 
   const createResource = async () => {
     if (!subjectId || !resForm.title || !resForm.url) return
-    await apiClient.post('/curriculum/resources', { subject_id: Number(subjectId), ...resForm })
+    await api.curriculum.createResource({ subject_id: Number(subjectId), ...resForm })
     setResForm({ title: '', url: '' })
     await load()
   }
 
   const createAssignment = async () => {
     if (!classId || !subjectId || !user?.teacher_id || !asgForm.title || !asgForm.due_date) return
-    await apiClient.post('/curriculum/assignments', { class_id: Number(classId), subject_id: Number(subjectId), teacher_id: Number(user.teacher_id), ...asgForm })
+    await api.curriculum.createAssignment({ class_id: Number(classId), subject_id: Number(subjectId), teacher_id: Number(user.teacher_id), ...asgForm })
     setAsgForm({ title: '', description: '', due_date: '' })
     await load()
   }
 
   const loadSubmissions = async (assignmentId) => {
-    const { data } = await apiClient.get('/curriculum/submissions', { params: { assignment_id: assignmentId } })
+    const { data } = await api.curriculum.getSubmissions({ assignment_id: assignmentId })
     setSubmissions(data)
   }
 
   const gradeSubmission = async () => {
     if (!gradeForm.submission_id) return
-    await apiClient.post('/curriculum/submissions/grade', { submission_id: Number(gradeForm.submission_id), score: Number(gradeForm.score || 0), feedback: gradeForm.feedback })
+    await api.curriculum.gradeSubmission({ submission_id: Number(gradeForm.submission_id), score: Number(gradeForm.score || 0), feedback: gradeForm.feedback })
     setGradeForm({ submission_id: '', score: '', feedback: '' })
     // refresh current list
     if (assignments[0]) await loadSubmissions(assignments[0].id)
