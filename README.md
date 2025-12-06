@@ -1,103 +1,107 @@
 # MEB School Management System
 
-# Link to Projects Pitch Deck
-https://www.canva.com/design/DAG580EMfGY/eTk0SH85kiJdpDtewp3GWA/edit?utm_content=DAG580EMfGY&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
+![Project Status: Stable](https://img.shields.io/badge/Status-Stable-success)
+![Deployment: Deployed](https://img.shields.io/badge/Deployment-Live-blue)
+
+**Live Demo:** [Launch Application](https://mebschoolmanagementsystem.netlify.app) | **Pitch Deck:** [View on Canva](https://www.canva.com/design/DAG580EMfGY/eTk0SH85kiJdpDtewp3GWA/edit?utm_content=DAG580EMfGY&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
 
 ## About The Project
 
-MEB School Management System is a modern, web-based application designed to digitize and simplify the complex operations of educational institutions. It provides a centralized platform for administrators, teachers, students, and parents to manage academic and administrative tasks efficiently.
+**MEB School Management System** is a next-generation, AI-powered educational platform designed to modernize school administration. It replaces traditional paperwork with a centralized digital ecosystem connecting **Administrators, Teachers, Students, and Parents**.
 
-The system aims to reduce manual paperwork, improve communication, and provide real-time access to important information such as grades, attendance, fees, and school announcements, thereby fostering a more transparent and collaborative educational environment.
+Our mission is to support **SDG 4: Quality Education** by automating administrative burdens, allowing educators to focus on what matters most: teaching.
 
-## Sustainable Development Goal (SDG)
+---
 
-This project directly contributes to **Sustainable Development Goal 4: Quality Education**.
+## 🚀 Key Features
 
-By providing accessible digital tools for school administration, the system helps improve the efficiency and effectiveness of educational institutions. This allows educators to focus more on teaching and student development, ultimately enhancing the quality of education delivered.
+### 🔐 Authentication & Security
+*   **Role-Based Access Control (RBAC):** Distinct dashboards for Admins, Teachers, Students, and Parents.
+*   **Secure Signup/Login:** JWT-based session management.
+*   **Biometric Security:** AI-powered **Face Recognition Login** (comparable to FaceID) using Google Gemini Vision.
 
-## Built With
+### 📚 Curriculum & Learning
+*   **Lesson Planning:** Teachers can create, organize, and track lesson plans weeks in advance.
+*   **Assignments:** Full lifecycle management—Creation, Student Submission, and Grading.
+*   **Digital Resources:** Centralized repository for study materials and links.
 
-This project leverages a modern technology stack for a robust and scalable solution.
+### 🤖 AI Integration (Powered by Google Gemini 1.5)
+*   **AI Chat Assistant:** 24/7 support for students and teachers to answer academic queries.
+*   **Auto-Lesson Generator:** Teachers can generate detailed lesson plans from a simple topic prompt.
+*   **Smart Grading:** AI suggests grades and detailed feedback for student submissions.
+*   **Performance Prediction:** analyzing historical data to identify students at risk (Beta).
 
-**Frontend:**
-*   **React.js:** A JavaScript library for building user interfaces.
-*   **Vite:** A next-generation frontend tooling for fast development.
-*   **Axios:** A promise-based HTTP client for making API requests.
-*   **Deployment:** [Netlify](https://mebschoolmanagementsystem.netlify.app)
+### 🛠️ Administrative Control
+*   **User Management:** detailed tables to track faculty and student body.
+*   **System Health:** Real-time visibility into system usage and audits.
 
-**Backend:**
-*   **Python:** A versatile programming language for the server-side logic.
-*   **FastAPI/Flask:** A high-performance web framework for building APIs.
-*   **Gunicorn:** A Python WSGI HTTP Server for UNIX.
-*   **Uvicorn:** An ASGI server, for use with FastAPI.
-*   **SQLAlchemy:** A SQL toolkit and Object-Relational Mapper (ORM).
-*   **Deployment:** [Render](https://render.com/)
-*   **AI Integration:** [Google Gemini API](https://ai.google.dev/) (Generative AI & Vision)
+---
 
-## Key Features
+## 🛠️ Tech Stack
 
-### 🤖 Advanced AI Automation
-The application now integrates **Google Gemini 1.5 Flash** to provide cutting-edge AI capabilities:
+### Frontend
+*   **Framework:** React.js (Vite)
+*   **Styling:** Tailwind CSS
+*   **Routing:** React Router DOM (SPA)
+*   **Hosting:** Netlify ([View Deployment](https://mebschoolmanagementsystem.netlify.app))
 
-1.  **AI-Powered Face Recognition**:
-    - Uses **Gemini Vision** to securely verify user identity during login.
-    - Compares live camera input with enrolled photos using multimodal AI analysis, eliminating the need for heavy local libraries.
+### Backend
+*   **API:** Python FastAPI (Async)
+*   **Database:** PostgreSQL (via Render)
+*   **ORM:** SQLAlchemy (Async)
+*   **AI Engine:** Google Generative AI (Gemini 1.5 Flash)
+*   **Hosting:** Render ([View API Docs](https://meb-school-management-system-1-wkq1.onrender.com/docs))
 
-2.  **Intelligent Auto-Grading**:
-    - **Teachers** can instantly grade assignments by providing the question, student answer, and an optional rubric.
-    - The AI analyzes the answer and provides a **Score (0-10)**, **Detailed Feedback**, and **Improvement Tips**.
+---
 
-3.  **Personalized Study Guides**:
-    - **Students** can generate custom study plans based on their recent grades and performance.
-    - The AI identifies weak areas and suggests specific topics to focus on.
+## 🚧 Road Map (Under Construction)
 
-4.  **Performance Prediction**:
-    - Analyzes student history (grades, attendance) to predict future performance.
+While the core system is fully operational, we are actively developing the following sophisticated features:
 
-*   Node.js and npm (for the frontend)
-    ```sh
-    npm install npm@latest -g
-    ```
-*   Python and pip (for the backend)
+*   **💳 Payments & Invoicing:** Full integration with Paystack/Flutterwave is currently mocked. Real-time transaction processing is coming in v2.0.
+*   **📊 Advanced Analytics:** Deep-dive charts for school-wide academic performance are currently in prototype phase.
+*   **🔄 System Backup/Restore:** The endpoints `/api/admin/backup` and `/restore` are currently placeholders pending cloud storage integration.
+*   **📱 Mobile App:** A dedicated React Native mobile application for parents is planned for Q3 2025.
 
-### Frontend Installation
+---
 
-1.  Navigate to the `frontend` directory:
-    ```sh
-    cd frontend
-    ```
-2.  Install NPM packages:
-    ```sh
-    npm install
-    ```
-3.  Run the development server:
-    ```sh
-    npm run dev
-    ```
-    The application will be available at `http://localhost:5173`.
+## 💻 Local Installation
 
-### Backend Installation
+### Prerequisites
+*   Node.js & npm
+*   Python 3.10+
+*   PostgreSQL Service
 
-1.  Navigate to the `backend` directory.
-2.  Create and activate a virtual environment.
-3.  Install Python packages:
-    ```sh
-    pip install -r requirements.txt
-    ```
-4.  Run the server using Gunicorn (replace `app:app` with your actual application entrypoint if different):
-    ```sh
-    gunicorn --config app/gunicorn_conf.py app:app
-    gunicorn --config app/gunicorn_conf.py app:app
-    ```
-5.  **Configure Environment Variables**:
-    Create a `.env` file in the `backend` directory and add your Gemini API key:
-    ```properties
-    GEMINI_API_KEY=your_api_key_here
-    ```
+### 1. Backend Setup
+```bash
+cd backend
+python -m venv venv
+# Windows: venv\Scripts\activate | Mac/Linux: source venv/bin/activate
+pip install -r requirements.txt
 
-## Repository
+# Create .env file
+echo "DATABASE_URL=postgresql://user:pass@localhost/dbname" > .env
+echo "GEMINI_API_KEY=your_key_here" >> .env
+echo "SECRET_KEY=your_secret" >> .env
 
-The source code for this project is available on GitHub: https://github.com/eddygreat/Meb_School_Management_system
+# Run Migrations & Start Server
+python init_db.py
+uvicorn app.main:app --reload
+```
 
-## This repository includes the pitch deck
-MEB SMS Pitch Deck
+### 2. Frontend Setup
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+The app will launch at `http://localhost:5173`.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please fork the repository and submit a pull request.
+
+**Repository:** [GitHub Link](https://github.com/eddygreat/Meb_School_Management_system)
