@@ -11,6 +11,7 @@ def get_ai_response(prompt: str, image_parts: list = None) -> str:
     Generates a response from the Gemini model based on the provided prompt and optional images.
     """
     if not GEMINI_API_KEY:
+        print("❌ CRITICAL: GEMINI_API_KEY is not set in environment!")
         return "Error: Gemini API Key not configured. Please add GEMINI_API_KEY to your .env file."
     
     url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={GEMINI_API_KEY}"
