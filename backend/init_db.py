@@ -10,9 +10,12 @@ def init_db():
         print("DATABASE_URL not found")
         sys.exit(1)
 
-    # Handle asyncpg URL format if present
+    # Handle asyncpg/psycopg2 URL format for raw psycopg2 connection
+    # psycopg2.connect expects 'postgresql://' not 'postgresql+psycopg2://'
     if "+asyncpg" in db_url:
-        db_url = db_url.replace("+asyncpg", "+psycopg2")
+        db_url = db_url.replace("+asyncpg", "")
+    if "+psycopg2" in db_url:
+        db_url = db_url.replace("+psycopg2", "")
 
     try:
         conn = psycopg2.connect(db_url)
