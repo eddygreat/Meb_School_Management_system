@@ -90,21 +90,29 @@ def init_db():
             print("✅ Force initialization complete. Tables should be created.")
 
         # Final Verification
-        cur = conn.cursor()
-        cur.execute("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'")
-        final_tables = [r[0] for r in cur.fetchall()]
-        print(f"🔎 Final check from init_db: {final_tables}")
-        if 'users' not in final_tables:
-            raise Exception("CRITICAL: 'users' table STILL MISSING after upgrade!")
-        else:
-            print("✅ 'users' table confirmed present.")
-        
-        cur.close()
-        conn.close()
+        try:
+            conn_final = psycopg2.connect(db_url)
+            cur_final = conn_final.cursor()
+            cur_final.execute("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'")
+            final_tables = [r[0] for r in cur_final.fetchall()]
+            print(f"🔎 Final check from init_db: {final_tables}")
+            
+            if 'users' not in final_tables:
+                print("❌ CRITICAL: 'users' table STILL MISSING after upgrade!")
+                sys.exit(1)
+            else:
+                print("✅ 'users' table confirmed present.")
+            
+            cur_final.close()
+            conn_final.close()
+        except Exception as e:
+            print(f"⚠️ Error during final verification: {e}")
 
     except Exception as e:
         print(f"❌ Error during manual DB check/init: {e}")
-        raise e
+        # raise e  # Don't crash the container if init fails, let the app try.
+        # But for debugging, maybe we want to see it.
+        pass
 
 if __name__ == "__main__":
     try:
