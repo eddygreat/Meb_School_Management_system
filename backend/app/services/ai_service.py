@@ -43,17 +43,22 @@ async def get_ai_response(prompt: str, image_parts: list = None) -> str:
         async with httpx.AsyncClient() as client:
             response = await client.post(url, json=payload, headers={"Content-Type": "application/json"}, timeout=30)
         if response.status_code != 200:
-            return f"Error: API request failed with status {response.status_code}: {response.text}"
+            error_msg = f"Error: API request failed with status {response.status_code}: {response.text}"
+            print(f"❌ AI Service Google API Error: {error_msg}")
+            return error_msg
             
         data = response.json()
         # Extract text from response
         try:
             return data['candidates'][0]['content']['parts'][0]['text']
         except (KeyError, IndexError):
+            print(f"❌ AI Service Response Format Error: {data}")
             return "Error: Unexpected response format from Gemini API."
             
     except Exception as e:
-        return f"Error generating response: {str(e)}"
+        error_msg = f"Error generating response: {str(e)}"
+        print(f"❌ AI Service Exception: {error_msg}")
+        return error_msg
 
 async def generate_lesson_plan(topic: str, grade_level: str, subject: str) -> str:
     """
