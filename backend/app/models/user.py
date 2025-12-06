@@ -1,4 +1,4 @@
-from sqlalchemy import String, Integer, Boolean
+from sqlalchemy import String, Integer, Boolean, Enum
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -7,13 +7,21 @@ from app.core.security import get_password_hash, verify_password
 import logging
 logger = logging.getLogger(__name__)
 
+from enum import Enum as PyEnum
+
+class UserRole(str, PyEnum):
+    admin = "admin"
+    teacher = "teacher"
+    student = "student"
+    parent = "parent"
+
 class User(Base):
     __tablename__ = "users"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     email: Mapped[str] = mapped_column(String(255), unique=True, index=True)
     full_name: Mapped[str] = mapped_column(String(255))
     hashed_password: Mapped[str] = mapped_column(String(255))
-    role: Mapped[str] = mapped_column(String(50), index=True)  # admin, teacher, parent, student
+    role: Mapped[UserRole] = mapped_column(Enum(UserRole, name="userrole"), nullable=False, index=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
 
     @staticmethod

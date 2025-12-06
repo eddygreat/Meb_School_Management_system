@@ -25,7 +25,8 @@ async def register_admin(payload: RegisterAdmin, db: AsyncSession = Depends(get_
 
 @router.post("/register", response_model=UserOut)
 async def register(payload: UserCreate, db: AsyncSession = Depends(get_db)):
-    print(f"DEBUG: Registering user {payload.email}")
+    print(f"DEBUG: Registering user {payload.email} with role {payload.role}")
+    print(f"DEBUG: Payload dump: {payload.model_dump()}")
     try:
         existing = await User.get_by_email(db, payload.email)
         print(f"DEBUG: Checked existing user: {existing}")
